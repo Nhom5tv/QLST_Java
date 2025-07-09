@@ -10,7 +10,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
-import model.NhanVien;
+import Model.NhanVien;
 import view.NhanVienDialog;
 
 import java.awt.*;

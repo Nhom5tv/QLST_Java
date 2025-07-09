@@ -9,7 +9,7 @@ import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
-import model.NhanVien;
+import Model.NhanVien;
 import view.LoginView;
 
 

@@ -18,7 +18,7 @@ import java.sql.Connection;
 
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
-import model.NhanVien;
+import Model.NhanVien;
 import view.LoginView;
 import view.SignUpView;
 

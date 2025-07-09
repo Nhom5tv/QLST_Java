@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Properties;
-import model.NhanVien;
+import Model.NhanVien;
 
 public class TaiChinhDialog extends JDialog {
 

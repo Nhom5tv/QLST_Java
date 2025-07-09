@@ -1,6 +1,6 @@
 package View;
 
-import model.NhanVien;
+import Model.NhanVien;
 
 import javax.swing.*;
 import java.awt.*;
@@ -165,7 +165,7 @@ public class TrangChuView extends JFrame {
         sidebar.add(lblKhuyenMaiSection);
 
         lblThongKeSection = createSectionLabel("📊 8. Thống kê");
-        sidebar.add(lblThongKeSection);
+//        sidebar.add(lblThongKeSection);
         
         //nut logout
         ImageIcon icon = new ImageIcon(getClass().getResource("/imageBanHang/logout.png"));

@@ -144,9 +144,10 @@ public class GiaoDienSieuThi extends JFrame {
         productPanel.setBackground(new Color(245, 245, 245));
         productPanel.setPreferredSize(new Dimension(700, 650));
 
-        productWrapper = new JPanel(new BorderLayout());
-        productWrapper.add(productPanel, BorderLayout.NORTH);
+        productWrapper = new JPanel();
+        productWrapper.setLayout(new BoxLayout(productWrapper, BoxLayout.Y_AXIS));
         productWrapper.setBackground(new Color(245, 245, 245));
+        productWrapper.add(productPanel);
 
         JScrollPane scrollPane = new JScrollPane(productWrapper);
         scrollPane.setBorder(null);
