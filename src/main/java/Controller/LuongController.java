@@ -41,6 +41,8 @@ public class LuongController {
         loadLuongTheoThangNam();
 
         lview.btnReset.addActionListener(e -> loadLuongTheoThangNam());
+        lview.cboThang.addActionListener(e -> loadLuongTheoThangNam());
+        lview.cboNam.addActionListener(e -> loadLuongTheoThangNam());
         
         lview.txtTimKiem.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
         public void insertUpdate(javax.swing.event.DocumentEvent e) {

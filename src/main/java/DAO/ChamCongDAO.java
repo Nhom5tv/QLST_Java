@@ -174,7 +174,7 @@ public class ChamCongDAO {
         List<ChamCong> list = new ArrayList<>();
         String sql = "SELECT c.*, nv.ten_nv FROM cham_cong c " +
                      "JOIN nhanvien nv ON c.ma_nv = nv.ma_nv " +
-                     "WHERE nv.hoten LIKE ? ORDER BY c.ngay DESC";
+                     "WHERE nv.ten_nv LIKE ? ORDER BY c.ngay DESC";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

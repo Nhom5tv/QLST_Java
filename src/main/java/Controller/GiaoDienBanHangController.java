@@ -181,9 +181,12 @@ public class GiaoDienBanHangController {
             public void mouseClicked(MouseEvent e) {
                 SanPham selected = suggestionList.getSelectedValue();
                 if (selected != null) {
+                    System.out.println("Đã chọn sản phẩm từ suggestion: " + selected.getTenSanPham() + ", Giá: " + selected.getGiaBan());
                     themSanPhamVaoGio(selected);
                     view.txtTimKiem.setText(""); // ✅ Xóa nội dung tìm kiếm
                     suggestionPopup.setVisible(false);
+                } else {
+                    System.out.println("Lỗi: Không có sản phẩm nào được chọn hoặc selected là null!");
                 }
             }
         });
@@ -365,14 +368,31 @@ public class GiaoDienBanHangController {
     }
 
     private void themSanPhamVaoGio(SanPham sp) {
+        System.out.println("Bắt đầu thêm sản phẩm: " + sp.getTenSanPham() + ", Giá: " + sp.getGiaBan());
         Component comp = view.tabbedPane.getSelectedComponent();
         if (!(comp instanceof JPanel panel)) {
+            System.out.println("Lỗi: Component không phải JPanel!");
             return;
         }
 
-        JSplitPane splitPane = (JSplitPane) panel.getComponent(0);
+        JSplitPane splitPane = null;
+        for (Component c : panel.getComponents()) {
+            if (c instanceof JSplitPane) {
+                splitPane = (JSplitPane) c;
+                break;
+            }
+        }
+        if (splitPane == null) {
+            System.out.println("Lỗi: Không tìm thấy JSplitPane!");
+            return;
+        }
+
         JScrollPane scrollGioHang = (JScrollPane) splitPane.getTopComponent();
         tableGioHang = (JTable) scrollGioHang.getViewport().getView();
+        if (tableGioHang == null) {
+            System.out.println("Lỗi: tableGioHang là null!");
+            return;
+        }
         DefaultTableModel model = (DefaultTableModel) tableGioHang.getModel();
 
         boolean daTonTai = false;
@@ -382,21 +402,30 @@ public class GiaoDienBanHangController {
                 model.setValueAt(soLuongHienTai + 1, i, 2);
                 daTonTai = true;
                 capNhatThanhTien(model, i);
+                SwingUtilities.invokeLater(() -> tinhTienVaTienThua());
+                System.out.println("Đã tăng số lượng sản phẩm: " + sp.getTenSanPham());
                 break;
             }
         }
 
         if (!daTonTai) {
+            System.out.println("Thêm sản phẩm mới: " + sp.getTenSanPham());
             model.addRow(new Object[]{
                     sp.getMaSanPham(),
                     sp.getTenSanPham(),
                     1,
                     sp.getGiaBan(),
-                    0.0, // Giảm giá mặc định là 0%
+                    0.0,
                     tinhThanhTien(sp.getGiaBan(), 1, 0.0)
             });
-// Cập nhật tổng tiền sau khi thêm sản phẩm
-            tinhTienVaTienThua();
+            SwingUtilities.invokeLater(() -> {
+                model.fireTableDataChanged();
+                tableGioHang.revalidate();
+                tableGioHang.repaint();
+                capNhatThanhTien(model, model.getRowCount() - 1);
+                tinhTienVaTienThua();
+                System.out.println("Đã thêm sản phẩm mới và tính tiền.");
+            });
         }
     }
 
@@ -639,8 +668,8 @@ public class GiaoDienBanHangController {
         ((DefaultTableModel) tableGioHang.getModel()).addTableModelListener(ea -> {
             int row = ea.getFirstRow();
             int col = ea.getColumn();
-
-            if (col == 2 || col == 4) { // Cột số lượng hoặc giảm giá
+            System.out.println("Thay đổi tại hàng " + row + ", cột " + col);
+            if (col == -1 || col == 2 || col == 4) { // Thêm điều kiện col == -1
                 try {
                     int soLuong = Integer.parseInt(tableGioHang.getValueAt(row, 2).toString());
                     double donGia = Double.parseDouble(tableGioHang.getValueAt(row, 3).toString());
@@ -648,8 +677,7 @@ public class GiaoDienBanHangController {
 
                     double thanhTien = tinhThanhTien(donGia, soLuong, giam);
                     tableGioHang.setValueAt(thanhTien, row, 5);
-
-                    tinhTienVaTienThua();
+                    SwingUtilities.invokeLater(() -> tinhTienVaTienThua());
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -831,20 +859,28 @@ public class GiaoDienBanHangController {
     }
 
     private void tinhTienVaTienThua() {
+        System.out.println("Bắt đầu tính tiền và tiền thừa...");
         double tongTien = 0;
 
         // 1. Tính tổng tiền từ cột "Thành tiền" trong bảng giỏ hàng
         DefaultTableModel model = (DefaultTableModel) tableGioHang.getModel();
+        System.out.println("Số hàng trong giỏ: " + model.getRowCount());
         for (int i = 0; i < model.getRowCount(); i++) {
-            Object val = model.getValueAt(i, 5); // Cột "Thành tiền" (index = 5)
+            Object val = model.getValueAt(i, 5); // Cột "Thành tiền"
+            System.out.println("Hàng " + i + ", Thành tiền: " + val);
             if (val != null) {
                 try {
-                    tongTien += Double.parseDouble(val.toString());
+                    if (val instanceof BigDecimal) {
+                        tongTien += ((BigDecimal) val).doubleValue();
+                    } else {
+                        tongTien += Double.parseDouble(val.toString());
+                    }
                 } catch (NumberFormatException e) {
-                    e.printStackTrace(); // hoặc log
+                    System.err.println("Lỗi chuyển đổi giá trị tại hàng " + i + ": " + e.getMessage());
                 }
             }
         }
+        System.out.println("Tổng tiền tính được: " + tongTien);
         view.getLblTongTien().setText("Tổng Tiền: " + String.format("%,.0f đ", tongTien));
         // 2. Lấy tiền khách đưa
         String tienKhachStr = view.getTxtTienKhachDua().getText().trim();

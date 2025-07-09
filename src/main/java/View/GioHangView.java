@@ -44,6 +44,7 @@ public class GioHangView extends JFrame {
     private JPanel pnSummary;
     private JLabel lblTotal;
     private JCheckBox cbxAll;
+    private JButton btnCheckout;
     private List<GioHang> cartItems;
     private QuantityChangeListener quantityChangeListener;
     private int MaKH;
@@ -85,19 +86,19 @@ public class GioHangView extends JFrame {
         cbxAll = new JCheckBox("Tất cả");
         pnSummary.add(cbxAll, BorderLayout.WEST);
         lblTotal = new JLabel("Tổng cộng: 0 VND");
-        JButton btnCheckout = new JButton("Thanh toán");
-        btnCheckout.addActionListener(e -> {
-            List<GioHang> selectedItems = getSelectedCartItems();
-
-            if (selectedItems.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm để thanh toán.");
-            } else {
-                // Pass the selected items to the HoaDonOrderView
-                HoaDonOrderView orderView = new HoaDonOrderView(selectedItems, this, this, this.MaKH);
-                new HoaDonOrderController(new HoaDonOrderDAO(), new ChiTietHoaDonOrderDAO(), orderView, this.MaKH);
-                orderView.setVisible(true);
-            }
-        });
+        btnCheckout = new JButton("Thanh toán");
+//        btnCheckout.addActionListener(e -> {
+//            List<GioHang> selectedItems = getSelectedCartItems();
+//
+//            if (selectedItems.isEmpty()) {
+//                JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm để thanh toán.");
+//            } else {
+//                // Pass the selected items to the HoaDonOrderView
+//                HoaDonOrderView orderView = new HoaDonOrderView(selectedItems, this, this, this.MaKH);
+//                new HoaDonOrderController(new HoaDonOrderDAO(), new ChiTietHoaDonOrderDAO(), orderView, this.MaKH);
+//                orderView.setVisible(true);
+//            }
+//        });
 
         JPanel rightPanel = new JPanel();
         rightPanel.add(lblTotal);
@@ -250,7 +251,7 @@ public class GioHangView extends JFrame {
         }
     }
 
-    private List<GioHang> getSelectedCartItems() {
+    public List<GioHang> getSelectedCartItems() {
         List<GioHang> selectedItems = new ArrayList<>();
 
         // Lặp qua tất cả các sản phẩm trong giỏ hàng
@@ -325,5 +326,23 @@ public class GioHangView extends JFrame {
     public void removePaidItems(List<GioHang> paidItems) {
         cartItems.removeAll(paidItems); // Xóa các mục đã thanh toán khỏi danh sách giỏ hàng
         displayCartItems(cartItems); // Cập nhật lại giao diện
+    }
+
+    public void addCheckoutListener(ActionListener listener) {
+        btnCheckout.addActionListener(listener);
+    }
+
+    // Thêm getter cho nút thanh toán (nếu cần)
+    public JButton getCheckoutButton() {
+        return btnCheckout;
+    }
+
+    public void updateLocalQuantity(int maGH, int newQty) {
+        for (GioHang gh : cartItems) {
+            if (gh.getMaGH() == maGH) {
+                gh.setSoLuong(newQty);
+                break;
+            }
+        }
     }
 }
