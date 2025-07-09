@@ -93,7 +93,7 @@ public class NhaCungCapView extends JPanel {
         buttonPanel.add(btnXoa);
         buttonPanel.add(btnImportExcel);
         buttonPanel.add(btnExportExcel);
-        buttonPanel.add(btnExportPdf);
+//        buttonPanel.add(btnExportPdf);
         searchPanel.add(buttonPanel, BorderLayout.EAST);
         buttonPanel.setBackground(Color.WHITE);
         searchPanel.setBackground(Color.WHITE);

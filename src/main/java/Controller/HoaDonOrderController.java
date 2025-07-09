@@ -285,25 +285,25 @@ public class HoaDonOrderController {
         }
     }
 
-    public void removePaidItemsFromCart(List<GioHang> selectedItems) {
-        List<GioHang> paidItems = new ArrayList<>();
-        for (GioHang item : selectedItems) {
-            if (item.isIsPaid()) {
-                paidItems.add(item);
-            }
-        }
-        // Gọi phương thức từ GioHangView để cập nhật giỏ hàng
-        if (view.getParentView() instanceof GioHangView) {
-            GioHangView gioHangView = (GioHangView) view.getParentView();
-            gioHangView.removePaidItems(paidItems);
-        }
-
-        // Cập nhật cơ sở dữ liệu (nếu cần)
-        GioHangDAO gioHangDAO = new GioHangDAO();
-        for (GioHang item : paidItems) {
-            gioHangDAO.deleteItemById(item.getMaGH());
-        }
-    }
+//    public void removePaidItemsFromCart(List<GioHang> selectedItems) {
+//        List<GioHang> paidItems = new ArrayList<>();
+//        for (GioHang item : selectedItems) {
+//            if (item.isIsPaid()) {
+//                paidItems.add(item);
+//            }
+//        }
+//        // Gọi phương thức từ GioHangView để cập nhật giỏ hàng
+//        if (view.getParentView() instanceof GioHangView) {
+//            GioHangView gioHangView = (GioHangView) view.getParentView();
+//            gioHangView.removePaidItems(paidItems);
+//        }
+//
+//        // Cập nhật cơ sở dữ liệu (nếu cần)
+//        GioHangDAO gioHangDAO = new GioHangDAO();
+//        for (GioHang item : paidItems) {
+//            gioHangDAO.deleteItemById(item.getMaGH());
+//        }
+//    }
 
     // Xử lý khi nhấn nút Đặt hàng
     public void handleOrderButtonClick(List<GioHang> selectedItems, HoaDonOrder hoaDonOrder) {

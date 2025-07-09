@@ -58,14 +58,14 @@ public class HoaDonView extends JPanel {
             btn.setPreferredSize(new Dimension(100, 35));
         }
 
-        buttonPanel.add(btnThem);
-        buttonPanel.add(btnXoa);
-        buttonPanel.setBackground(Color.WHITE);
+//        buttonPanel.add(btnThem);
+//        buttonPanel.add(btnXoa);
+//        buttonPanel.setBackground(Color.WHITE);
         searchPanel.add(buttonPanel, BorderLayout.EAST);
         searchPanel.setBackground(Color.WHITE);
 
         // ==== Table Setup ====
-        String[] columnNames = {"Mã Hoá Đơn", "Ngày Lập", "Tên Nhân Viên", "Tổng Tiền", "Hình thức Thanh Toán", "Trạng Thái", "Ghi Chú"};
+        String[] columnNames = {"Mã Hoá Đơn", "Ngày Lập", "Tên Nhân Viên", "Tổng Tiền", "Hình thức Thanh Toán", "Ghi Chú"};
         tableModel = new DefaultTableModel(null, columnNames) {
             @Override
             public Class<?> getColumnClass(int column) {
@@ -76,8 +76,7 @@ public class HoaDonView extends JPanel {
                     case 2: return String.class; // Tên Nhân Viên
                     case 3: return Double.class; // Tổng Tiền
                     case 4: return String.class; // Hình thức Thanh Toán
-                    case 5: return String.class; // Trạng Thái
-                    case 6: return String.class; // Ghi Chú
+                    case 5: return String.class; // Ghi Chú
                     default: return String.class;
                 }
             }

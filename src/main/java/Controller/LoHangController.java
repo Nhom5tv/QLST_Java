@@ -44,12 +44,14 @@ public class LoHangController {
     private TonKhoController tkController;
     private TaiChinhDAO tcDAO;
     private Connection conn;
+    private TaiChinhController taiChinhController;
 
     public LoHangController(TrangChuView view, LoHangView panel, TonKhoController tkController) {
         this.trangChu = view;
         this.lhview = panel;
         this.lhDAO = new LoHangDAO();
         this.tcDAO=new TaiChinhDAO();
+        this.taiChinhController = taiChinhController;
         try {
             this.conn = DBConnection.getConnection();
             this.spDAO = new SanPhamDAO(conn);
@@ -183,6 +185,9 @@ public class LoHangController {
                     boolean success = tcDAO.insertChiTuTatCaPhieuNhap();
                     if (success) {
                         JOptionPane.showMessageDialog(null, "Đã tự động thêm khoản **chi** vào bảng tài chính.");
+                        if (taiChinhController != null) {
+                            taiChinhController.loadData(null);
+                        }
                     } else {
                         JOptionPane.showMessageDialog(null, "Không thể thêm khoản chi. Có thể đã tồn tại hoặc dữ liệu chưa đủ.");
                     }

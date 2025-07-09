@@ -26,7 +26,7 @@ import Model.ChiTietHoaDon;
 // Import your HoaDonDAO and ChiTietHoaDonDAO classes (or create them)
 import DAO.HoaDonDAO;
 import DAO.ChiTietHoaDonDAO;
-import model.NhanVien;
+import Model.NhanVien;
 import Controller.HoaDonController;
 import DAO.TaiChinhDAO;
 import DAO.TonKhoDAO;

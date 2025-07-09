@@ -20,7 +20,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import DAO.NhanVienDAOplus;
 import View.TrangChuView;
-import model.NhanVien;
+import Model.NhanVien;
 import view.NhanVienView;
 
 public class NhanVienController {

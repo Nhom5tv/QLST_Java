@@ -10,7 +10,7 @@ import Model.TaiKhoan;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-import model.NhanVien;
+import Model.NhanVien;
 
 public class TaiKhoanDialog extends JDialog {
 

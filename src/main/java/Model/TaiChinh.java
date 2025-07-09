@@ -1,5 +1,7 @@
 package model;
 
+import Model.NhanVien;
+
 import java.math.BigDecimal;
 import java.util.Date;
 

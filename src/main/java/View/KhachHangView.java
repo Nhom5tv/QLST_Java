@@ -68,7 +68,7 @@ public class KhachHangView extends JPanel {
         for (JButton btn : new JButton[]{btnThem, btnXoa, btnXuatExcel}) {
             btn.setPreferredSize(new Dimension(100, 35));
         }
-        buttonPanel.add(btnThem);
+//        buttonPanel.add(btnThem);
         buttonPanel.add(btnXoa);
         buttonPanel.add(btnXuatExcel);
         searchPanel.add(buttonPanel, BorderLayout.EAST);
