@@ -1,7 +1,9 @@
 package Controller;
 
 import DAO.HoaDonDAO;
+import Model.ChiTietHoaDon;
 import Model.HoaDon;
+import View.ChiTietHoaDonDialog;
 import View.HoaDonView;
 import View.TrangChuView;
 import View.ThongBaodialog;
@@ -56,32 +58,42 @@ public class HoaDonController {
                 timkiem();
             }
         });
+        hdView.getTable().addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    int row = hdView.getTable().getSelectedRow();
+                    if (row != -1) {
+                        int maHD = (int) hdView.getTableModel().getValueAt(row, 0);
+                        showHoaDonDetail(maHD);
+                    }
+                }
+            }
+        });
+
 
         loadTableData();
     }
 
     public void loadTableData() {
-    System.out.println(">> Đang load dữ liệu hóa đơn...");
-    DefaultTableModel model = hdView.getTableModel();
-    model.setRowCount(0);
-    List<HoaDon> list = hdDao.getAllHoaDon();
-    System.out.println(">> Số hóa đơn lấy được: " + list.size());
+        System.out.println(">> Đang load dữ liệu hóa đơn...");
+        DefaultTableModel model = hdView.getTableModel();
+        model.setRowCount(0);
+        List<HoaDon> list = hdDao.getAllHoaDon();
+        System.out.println(">> Số hóa đơn lấy được: " + list.size());
 
-    for (HoaDon hd : list) {
-        System.out.println(">> HĐ: " + hd.getMaHoaDon() + " | NV: " + hd.getTenNV());
-        model.addRow(new Object[]{
-                hd.getMaHoaDon(),
-                dateFormat.format(Timestamp.valueOf(hd.getNgayLap())),
-                hd.getTenNV(),
-                hd.getTongTien(),
-                hd.getHinhThucThanhToan(),
-                hd.getGhiChu()
-        });
+        for (HoaDon hd : list) {
+            System.out.println(">> HĐ: " + hd.getMaHoaDon() + " | NV: " + hd.getTenNV());
+            model.addRow(new Object[]{
+                    hd.getMaHoaDon(),
+                    dateFormat.format(Timestamp.valueOf(hd.getNgayLap())),
+                    hd.getTenNV(),
+                    hd.getTongTien(),
+                    hd.getHinhThucThanhToan(),
+                    hd.getGhiChu()
+            });
+        }
     }
-}
-
-
-
     private void timkiem() {
         String keyword = hdView.getSearchText().toLowerCase().trim();
         DefaultTableModel model = hdView.getTableModel();
@@ -89,7 +101,7 @@ public class HoaDonController {
 
         List<HoaDon> list = hdDao.getAllHoaDon();
         for (HoaDon hd : list) {
-            String dateStr = dateFormat.format(hd.getNgayLap());
+            String dateStr = dateFormat.format(Timestamp.valueOf(hd.getNgayLap()));
             boolean matchesId = false;
             boolean matchesDate = false;
 
@@ -118,4 +130,14 @@ public class HoaDonController {
             }
         }
     }
+    private void showHoaDonDetail(int maHD) {
+        List<ChiTietHoaDon> chiTietList = hdDao.getChiTietByMaHoaDon(maHD);
+        if (chiTietList.isEmpty()) {
+            JOptionPane.showMessageDialog(hdView, "Không có chi tiết cho hóa đơn này.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        ChiTietHoaDonDialog dialog = new ChiTietHoaDonDialog(stmv, maHD, chiTietList);
+        dialog.setVisible(true);
+    }
+
 }

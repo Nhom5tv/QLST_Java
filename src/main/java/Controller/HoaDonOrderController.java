@@ -14,6 +14,7 @@ import Model.DiaChi;
 import View.DiaChiView;
 import View.GiaoDienSieuThi;
 
+import java.math.BigDecimal;
 import java.util.List;
 import javax.swing.JOptionPane;
 
@@ -402,15 +403,25 @@ public class HoaDonOrderController {
         return chiTietHoaDons;
     }
 
-    private int tinhTongTien(List<ChiTietHoaDonOrder> chiTietHoaDons, int discountValue) {
-        int tongTienHang = 0;
+    private BigDecimal tinhTongTien(List<ChiTietHoaDonOrder> chiTietHoaDons, int discountValue) {
+        BigDecimal tongTienHang = BigDecimal.ZERO;
+
         for (ChiTietHoaDonOrder chiTiet : chiTietHoaDons) {
-            tongTienHang += chiTiet.getDonGia() * chiTiet.getSoLuong();
+            BigDecimal donGia = BigDecimal.valueOf(chiTiet.getDonGia());
+            BigDecimal soLuong = BigDecimal.valueOf(chiTiet.getSoLuong());
+            tongTienHang = tongTienHang.add(donGia.multiply(soLuong));
         }
 
-        // Áp dụng giảm giá và phí vận chuyển (nếu có)
-        int tongTien = tongTienHang + discountValue;
-        return Math.max(tongTien, 0); // Đảm bảo không âm
+        // Trừ giảm giá
+        BigDecimal giamGia = BigDecimal.valueOf(discountValue);
+        BigDecimal tongTien = tongTienHang.subtract(giamGia);
+
+        // Đảm bảo không âm
+        if (tongTien.compareTo(BigDecimal.ZERO) < 0) {
+            return BigDecimal.ZERO;
+        }
+
+        return tongTien;
     }
 
     private GioHang getItemFromCart(List<GioHang> selectedItems, ChiTietHoaDonOrder chiTiet) {

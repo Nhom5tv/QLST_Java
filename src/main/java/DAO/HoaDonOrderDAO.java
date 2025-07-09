@@ -32,7 +32,7 @@ public class HoaDonOrderDAO {
                 hoaDon.setMaHoaDon(rs.getInt("ma_hoa_don"));
                 hoaDon.setMaKhachHang(rs.getInt("ma_khach_hang"));
                 hoaDon.setNgayTao(rs.getTimestamp("ngay_tao"));
-                hoaDon.setTongTien(rs.getDouble("tong_tien"));
+                hoaDon.setTongTien(rs.getBigDecimal("tong_tien"));
                 hoaDon.setMakhuyenmai(rs.getString("ma_khuyen_mai"));
                 hoaDon.setTrangThai(rs.getString("trang_thai"));
 
@@ -53,7 +53,7 @@ public class HoaDonOrderDAO {
             Timestamp currentTime = new Timestamp(System.currentTimeMillis());
             stmt.setInt(1, hoaDon.getMaKhachHang());
             stmt.setTimestamp(2, currentTime);
-            stmt.setDouble(3, hoaDon.getTongTien());
+            stmt.setBigDecimal(3, hoaDon.getTongTien());
             stmt.setString(4, hoaDon.getMakhuyenmai());
             stmt.setString(5, trangThai);
 
@@ -104,7 +104,7 @@ public class HoaDonOrderDAO {
                 hd.setMaHoaDon(rs.getInt("ma_hoa_don"));
                 hd.setMaKhachHang(rs.getInt("ma_khach_hang"));
                 hd.setNgayTao(rs.getTimestamp("ngay_tao"));
-                hd.setTongTien(rs.getDouble("tong_tien"));
+                hd.setTongTien(rs.getBigDecimal("tong_tien"));
                 hd.setTrangThai(rs.getString("trang_thai"));
 
                 list.add(hd); // CHƯA gán chi tiết ở đây

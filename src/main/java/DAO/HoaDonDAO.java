@@ -1,6 +1,7 @@
 package DAO;
 
 import Bridge.DBConnection;
+import Model.ChiTietHoaDon;
 import Model.HoaDon;
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -42,51 +43,51 @@ public class HoaDonDAO {
     }
 
     // Lấy tất cả hóa đơn có JOIN tên nhân viên
-  public List<HoaDon> getAllHoaDon() {
-    List<HoaDon> list = new ArrayList<>();
-    String sql = "SELECT hd.*, nv.ten_nv FROM hoa_don hd JOIN nhanvien nv ON hd.ma_nv = nv.ma_nv";
+    public List<HoaDon> getAllHoaDon() {
+        List<HoaDon> list = new ArrayList<>();
+        String sql = "SELECT hd.*, nv.ten_nv FROM hoa_don hd JOIN nhanvien nv ON hd.ma_nv = nv.ma_nv";
 
-    System.out.println("[DEBUG] Chuẩn bị thực thi câu SQL: " + sql);
-    
-    try (
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        ResultSet rs = stmt.executeQuery()
-    ) {
-        System.out.println("[DEBUG] Đã thực thi xong câu lệnh SQL");
+        System.out.println("[DEBUG] Chuẩn bị thực thi câu SQL: " + sql);
 
-        int count = 0;
+        try (
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()
+        ) {
+            System.out.println("[DEBUG] Đã thực thi xong câu lệnh SQL");
 
-        while (rs.next()) {
-            HoaDon hd = new HoaDon();
-            hd.setMaHoaDon(rs.getInt("ma_hoa_don"));
-            hd.setNgayLap(rs.getTimestamp("ngay_lap").toLocalDateTime());
-            hd.setMaNV(rs.getInt("ma_nv"));
-            hd.setTenNV(rs.getString("ten_nv")); // tên nhân viên
-            hd.setTongTien(rs.getBigDecimal("tong_tien"));
-            hd.setHinhThucThanhToan(rs.getString("hinh_thuc_thanh_toan"));
-            hd.setGhiChu(rs.getString("ghi_chu"));
-            list.add(hd);
-            count++;
+            int count = 0;
 
-            System.out.println("[DEBUG] Đọc được hóa đơn: " + hd.getMaHoaDon() + ", nhân viên: " + hd.getTenNV());
+            while (rs.next()) {
+                HoaDon hd = new HoaDon();
+                hd.setMaHoaDon(rs.getInt("ma_hoa_don"));
+                hd.setNgayLap(rs.getTimestamp("ngay_lap").toLocalDateTime());
+                hd.setMaNV(rs.getInt("ma_nv"));
+                hd.setTenNV(rs.getString("ten_nv")); // tên nhân viên
+                hd.setTongTien(rs.getBigDecimal("tong_tien"));
+                hd.setHinhThucThanhToan(rs.getString("hinh_thuc_thanh_toan"));
+                hd.setGhiChu(rs.getString("ghi_chu"));
+                list.add(hd);
+                count++;
+
+                System.out.println("[DEBUG] Đọc được hóa đơn: " + hd.getMaHoaDon() + ", nhân viên: " + hd.getTenNV());
+            }
+
+            System.out.println("[DEBUG] Tổng số hóa đơn lấy được: " + count);
+
+        } catch (SQLException e) {
+            System.out.println("[ERROR] Lỗi SQL khi truy vấn hóa đơn:");
+            e.printStackTrace();
         }
 
-        System.out.println("[DEBUG] Tổng số hóa đơn lấy được: " + count);
-
-    } catch (SQLException e) {
-        System.out.println("[ERROR] Lỗi SQL khi truy vấn hóa đơn:");
-        e.printStackTrace();
+        return list;
     }
-
-    return list;
-}
 
     // Thêm hóa đơn mới
     public boolean insertHoaDon(HoaDon hd) {
         String sql = "INSERT INTO hoa_don(ma_hoa_don, ngay_lap, ma_nv, tong_tien, hinh_thuc_thanh_toan,ghi_chu) " +
-                     "VALUES (?, ?, ?, ?, ?, ?)";
+                "VALUES (?, ?, ?, ?, ?, ?)";
         try (
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, hd.getMaHoaDon());
             stmt.setTimestamp(2, Timestamp.valueOf(hd.getNgayLap()));
             stmt.setInt(3, hd.getMaNV());
@@ -103,7 +104,7 @@ public class HoaDonDAO {
     public boolean updateHoaDon(HoaDon hd) {
         String sql = "UPDATE hoa_don SET ngay_lap = ?, ma_nv = ?, tong_tien = ?, hinh_thuc_thanh_toan = ?, ghi_chu = ? WHERE ma_hoa_don = ?";
         try (
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setTimestamp(1, Timestamp.valueOf(hd.getNgayLap()));
             stmt.setInt(2, hd.getMaNV());
             stmt.setBigDecimal(3, hd.getTongTien());
@@ -120,7 +121,7 @@ public class HoaDonDAO {
     public boolean deleteHoaDon(int maHoaDon) {
         String sql = "DELETE FROM hoa_don WHERE ma_hoa_don = ?";
         try (
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, maHoaDon);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -139,7 +140,7 @@ public class HoaDonDAO {
            OR DATE(hd.ngay_lap) = ?
         """;
         try (
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, "%" + keyword + "%");
 
@@ -166,6 +167,27 @@ public class HoaDonDAO {
             }
 
         } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    public List<ChiTietHoaDon> getChiTietByMaHoaDon(int maHoaDon) {
+        List<ChiTietHoaDon> list = new ArrayList<>();
+        String sql = "SELECT * FROM chi_tiet_hoa_don WHERE ma_hoa_don = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, maHoaDon);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ChiTietHoaDon ct = new ChiTietHoaDon();
+                ct.setMaHoaDon(rs.getInt("ma_hoa_don"));
+                ct.setMaSanPham(rs.getInt("ma_san_pham"));
+                ct.setSoLuong(rs.getInt("so_luong"));
+                ct.setDonGia(rs.getBigDecimal("don_gia"));
+                ct.setGiamGia(rs.getBigDecimal("giam_gia"));
+                ct.setMaLo(rs.getInt("ma_lo_hang"));
+                list.add(ct);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return list;

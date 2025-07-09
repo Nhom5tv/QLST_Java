@@ -4,6 +4,7 @@
  */
 package Model;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ public class HoaDonOrder {
     private int maHoaDon;
     private int maKhachHang;
     private Timestamp ngayTao;
-    private double tongTien;
+    private BigDecimal tongTien;
     private String makhuyenmai;
     private String trangThai;
     private DiaChi diaChi;
@@ -30,7 +31,7 @@ public class HoaDonOrder {
         this.chiTietHoaDons = chiTietHoaDons != null ? chiTietHoaDons : new ArrayList<>();
     }
 
-    public HoaDonOrder(int maHoaDon, int maKhachHang, Timestamp ngayTao, double tongTien, String makhuyenmai, String trangThai, DiaChi diaChi, List<ChiTietHoaDonOrder> chiTietHoaDons) {
+    public HoaDonOrder(int maHoaDon, int maKhachHang, Timestamp ngayTao, BigDecimal tongTien, String makhuyenmai, String trangThai, DiaChi diaChi, List<ChiTietHoaDonOrder> chiTietHoaDons) {
         this.maHoaDon = maHoaDon;
         this.maKhachHang = maKhachHang;
         this.ngayTao = ngayTao;
@@ -41,7 +42,7 @@ public class HoaDonOrder {
         this.chiTietHoaDons = chiTietHoaDons != null ? chiTietHoaDons : new ArrayList<>();
     }
 
-    public HoaDonOrder(int maKhachHang, Timestamp ngayTao, double tongTien, String makhuyenmai, String trangThai, DiaChi diaChi, List<ChiTietHoaDonOrder> chiTietHoaDons) {
+    public HoaDonOrder(int maKhachHang, Timestamp ngayTao, BigDecimal tongTien, String makhuyenmai, String trangThai, DiaChi diaChi, List<ChiTietHoaDonOrder> chiTietHoaDons) {
         this.maKhachHang = maKhachHang;
         this.ngayTao = ngayTao;
         this.tongTien = tongTien;
@@ -102,11 +103,11 @@ public class HoaDonOrder {
         this.ngayTao = ngayTao;
     }
 
-    public double getTongTien() {
+    public BigDecimal getTongTien() {
         return tongTien;
     }
 
-    public void setTongTien(double tongTien) {
+    public void setTongTien(BigDecimal tongTien) {
         this.tongTien = tongTien;
     }
 
