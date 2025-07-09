@@ -5,7 +5,6 @@
 package Controller;
 
 /**
- *
  * @author Admin
  */
 
@@ -14,6 +13,7 @@ import DAO.HoaDonOrderDAO;
 import Model.HoaDonOrder;
 import View.DonHangCard;
 import View.LichSuMuaHangView;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -58,11 +58,18 @@ public class LichSuMuaHangController {
 
         view.searchField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void insertUpdate(DocumentEvent e) { load(); }
+            public void insertUpdate(DocumentEvent e) {
+                load();
+            }
+
             @Override
-            public void removeUpdate(DocumentEvent e) { load(); }
+            public void removeUpdate(DocumentEvent e) {
+                load();
+            }
+
             @Override
-            public void changedUpdate(DocumentEvent e) {}
+            public void changedUpdate(DocumentEvent e) {
+            }
         });
 
         load();
@@ -88,15 +95,41 @@ public class LichSuMuaHangController {
             boolean matchSearch = keyword.isEmpty()
                     || String.valueOf(order.getMaHoaDon()).contains(keyword)
                     || order.getChiTietHoaDons().stream()
-                        .anyMatch(ct -> ct.getTenSanPham().toLowerCase().contains(keyword));
+                    .anyMatch(ct -> ct.getTenSanPham().toLowerCase().contains(keyword));
 
             if (matchStatus && matchSearch) {
-                view.orderListPanel.add(new DonHangCard(order));
+                DonHangCard card = new DonHangCard(order);
+
+                // Thêm sự kiện cho nút hủy (nếu có)
+                if ("Đang xử lý".equals(order.getTrangThai())) {
+                    card.addCancelListener(e -> handleCancelOrder(card.getMaHoaDon()));
+                }
+
+                view.orderListPanel.add(card);
             }
         }
 
         view.revalidate();
         view.repaint();
+    }
+
+    private void handleCancelOrder(int maHoaDon) {
+        int confirm = JOptionPane.showConfirmDialog(
+                view,
+                "Bạn có chắc chắn muốn hủy đơn hàng #" + maHoaDon + "?",
+                "Xác nhận hủy đơn",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            boolean success = hoaDonDAO.updateStatus(maHoaDon, "Hủy");
+            if (success) {
+                JOptionPane.showMessageDialog(view, "Đã hủy đơn hàng thành công!");
+                load(); // Tải lại danh sách
+            } else {
+                JOptionPane.showMessageDialog(view, "Hủy đơn hàng thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 }
 

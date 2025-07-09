@@ -13,14 +13,20 @@ import Model.GioHang;
 import Model.DiaChi;
 import View.DiaChiView;
 import View.GiaoDienSieuThi;
+
 import java.util.List;
 import javax.swing.JOptionPane;
+
 import View.HoaDonOrderView;
+
 import java.io.FileOutputStream;
+
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+
 import java.util.ArrayList;
+
 import Controller.DiaChiController;
 import DAO.GioHangDAO;
 import DAO.KhachHangDAO;
@@ -35,6 +41,7 @@ import View.HoaDonTrangThaiDialog;
 import View.TrangChuView;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.itextpdf.text.pdf.BaseFont;
+
 import java.awt.Desktop;
 import java.io.File;
 import java.sql.Connection;
@@ -53,7 +60,6 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 /**
- *
  * @author Admin
  */
 public class HoaDonOrderController {
@@ -163,12 +169,12 @@ public class HoaDonOrderController {
 
         for (HoaDonOrder hd : list) {
             model.addRow(new Object[]{
-                hd.getMaHoaDon(),
-                hd.getMaKhachHang(),
-                hd.getNgayTao(),
-                hd.getTongTien(),
-                hd.getMakhuyenmai(),
-                hd.getTrangThai()
+                    hd.getMaHoaDon(),
+                    hd.getMaKhachHang(),
+                    hd.getNgayTao(),
+                    hd.getTongTien(),
+                    hd.getMakhuyenmai(),
+                    hd.getTrangThai()
             });
         }
     }
@@ -438,14 +444,21 @@ public class HoaDonOrderController {
     private void handleUpdateStatus() {
         int row = hdview.getTable().getSelectedRow();
         if (row == -1) {
+            JOptionPane.showMessageDialog(hdview, "Vui lòng chọn một hóa đơn để cập nhật trạng thái!");
             return;
         }
 
         int maHD = (int) hdview.getTableModel().getValueAt(row, 0);
         String currentStatus = (String) hdview.getTableModel().getValueAt(row, 5);
 
+        // Kiểm tra nếu trạng thái hiện tại là "Hoàn thành" hoặc "Hủy"
+        if ("Hoàn thành".equals(currentStatus) || "Hủy".equals(currentStatus)) {
+            JOptionPane.showMessageDialog(hdview, "Không thể thay đổi trạng thái của hóa đơn đã " + currentStatus.toLowerCase() + "!");
+            return;
+        }
+
         HoaDonTrangThaiDialog dialog = new HoaDonTrangThaiDialog(stmv, "Cập nhật trạng thái");
-        dialog.setSelectedTrangThai(currentStatus);
+        dialog.setCurrentStatus(currentStatus); // Sử dụng phương thức mới thay vì setSelectedTrangThai
         dialog.setVisible(true);
 
         if (dialog.isConfirmed()) {
@@ -464,21 +477,17 @@ public class HoaDonOrderController {
 
                         if (newStatus.equals("Hoàn thành")) {
                             tkDAO.hoanTatDonHang(maSP, maLo, soLuong);
-                        } else if (newStatus.equals("Huỷ")) {
+                        } else if (newStatus.equals("Hủy")) {
                             tkDAO.huyDonHang(maSP, maLo, soLuong);
-                            System.out.println("Có hủy đơn hàng");
                         }
                     }
                     if (tkController != null) {
                         tkController.loadTonKhoTable();
                     }
-
                 } else {
-                    JOptionPane.showMessageDialog(hdview, "Lỗi khi cập nhật!");
+                    JOptionPane.showMessageDialog(hdview, "Lỗi khi cập nhật trạng thái!");
                 }
             }
-
         }
     }
-
 }
