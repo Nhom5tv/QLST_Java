@@ -122,7 +122,7 @@ public class GiaoDienBanHangController {
         suggestionList.setCellRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index,
-                    boolean isSelected, boolean cellHasFocus) {
+                                                          boolean isSelected, boolean cellHasFocus) {
                 Component comp = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 if (value instanceof SanPham sp) {
                     setText(sp.getTenSanPham() + " - Giá: " + sp.getGiaBan());
@@ -388,12 +388,12 @@ public class GiaoDienBanHangController {
 
         if (!daTonTai) {
             model.addRow(new Object[]{
-                sp.getMaSanPham(),
-                sp.getTenSanPham(),
-                1,
-                sp.getGiaBan(),
-                0.0, // Giảm giá mặc định là 0%
-                tinhThanhTien(sp.getGiaBan(), 1, 0.0)
+                    sp.getMaSanPham(),
+                    sp.getTenSanPham(),
+                    1,
+                    sp.getGiaBan(),
+                    0.0, // Giảm giá mặc định là 0%
+                    tinhThanhTien(sp.getGiaBan(), 1, 0.0)
             });
 // Cập nhật tổng tiền sau khi thêm sản phẩm
             tinhTienVaTienThua();
@@ -498,7 +498,7 @@ public class GiaoDienBanHangController {
 
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value,
-                boolean isSelected, int row, int column) {
+                                                     boolean isSelected, int row, int column) {
             this.value = (Integer) value;
             this.row = row;
             txtValue.setText(String.valueOf(this.value));
@@ -531,8 +531,8 @@ public class GiaoDienBanHangController {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
-                boolean isSelected, boolean hasFocus,
-                int row, int column) {
+                                                       boolean isSelected, boolean hasFocus,
+                                                       int row, int column) {
             if (value instanceof Integer) {
                 lblValue.setText(value.toString());
             } else {
@@ -714,12 +714,12 @@ public class GiaoDienBanHangController {
                 }
                 if (!daTonTai) {
                     model.addRow(new Object[]{
-                        sp.getMaSanPham(),
-                        sp.getTenSanPham(),
-                        1,
-                        sp.getGiaBan(),
-                        0.0, // Giảm giá mặc định là 0%
-                        tinhThanhTien(sp.getGiaBan(), 1, 0.0)
+                            sp.getMaSanPham(),
+                            sp.getTenSanPham(),
+                            1,
+                            sp.getGiaBan(),
+                            0.0, // Giảm giá mặc định là 0%
+                            tinhThanhTien(sp.getGiaBan(), 1, 0.0)
                     });
                 }
             });
@@ -938,11 +938,11 @@ public class GiaoDienBanHangController {
             JOptionPane.showMessageDialog(view, "Lưu hóa đơn thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             // 🌟 Gọi hàm thêm khoản thu
             boolean thuInserted = new TaiChinhDAO().insertThuTuTatCaHoaDonVaDonHang();
-                if (thuInserted) {
-                    System.out.println("✅ Thêm khoản thu thành công!");
-                } else {
-                    System.out.println("⚠️ Không có khoản thu nào được thêm.");
-                }
+            if (thuInserted) {
+                System.out.println("✅ Thêm khoản thu thành công!");
+            } else {
+                System.out.println("⚠️ Không có khoản thu nào được thêm.");
+            }
             model.setRowCount(0);
             tinhTienVaTienThua();
 

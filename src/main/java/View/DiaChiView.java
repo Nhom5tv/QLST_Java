@@ -96,7 +96,8 @@ public class DiaChiView extends JDialog {
         ButtonGroup group = new ButtonGroup();
         JPanel itemPanel = new JPanel(new BorderLayout());
         itemPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-        itemPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
+        itemPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+        itemPanel.setPreferredSize(new Dimension(550, 80));
 
         JRadioButton radio = new JRadioButton();
         group.add(radio);
