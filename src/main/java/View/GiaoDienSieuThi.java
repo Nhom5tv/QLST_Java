@@ -32,6 +32,7 @@ public class GiaoDienSieuThi extends JFrame {
         this.tenKH = kh.getHoTen();
         setTitle("BÁN HÀNG SIÊU THỊ");
         setExtendedState(JFrame.MAXIMIZED_BOTH); // Mở toàn màn hình, tự điều chỉnh
+//        setSize(new Dimension(1140, 600));
         setMinimumSize(new Dimension(800, 600));
         setLocationRelativeTo(null);
 

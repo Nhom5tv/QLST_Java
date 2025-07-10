@@ -45,9 +45,11 @@ import com.itextpdf.text.pdf.BaseFont;
 
 import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import javax.swing.JFrame;
@@ -56,6 +58,7 @@ import javax.swing.RowFilter;
 import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -207,8 +210,18 @@ public class HoaDonOrderController {
 
     public void generateInvoicePDF(HoaDonOrder hoaDonOrder, List<GioHang> selectedItems) {
         try {
+            File desktopDir = FileSystemView.getFileSystemView().getHomeDirectory();
+            File folder = new File(desktopDir, "HoaDonPDF");
+
+            // Tạo thư mục nếu chưa tồn tại
+            if (!folder.exists() && !folder.mkdirs()) {
+                throw new IOException("Không thể tạo thư mục lưu hóa đơn: " + folder.getAbsolutePath());
+            }
+            
+            String fileName = "HoaDon_" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + ".pdf";
+            String filePath = new File(folder, fileName).getAbsolutePath();
             // 1. Tạo đường dẫn lưu ra Desktop
-            String fileName = System.getProperty("user.home") + "/Desktop/Invoice_" + hoaDonOrder.getMaHoaDon() + ".pdf";
+          
 
             // 2. Nhúng font Arial hỗ trợ tiếng Việt
             String fontPath = "src/main/resources/fonts/arial.ttf";
@@ -218,7 +231,7 @@ public class HoaDonOrderController {
 
             // 3. Mở document
             Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream(fileName));
+            PdfWriter.getInstance(document, new FileOutputStream(filePath));
             document.open();
 
             // 4. Lấy thông tin hóa đơn
@@ -277,9 +290,9 @@ public class HoaDonOrderController {
             document.close();
             JOptionPane.showMessageDialog(null, "✅ Hóa đơn đã được lưu trên Desktop!");
 
-            if (Desktop.isDesktopSupported()) {
-                Desktop.getDesktop().open(new File(fileName));
-            }
+//            if (Desktop.isDesktopSupported()) {
+//                Desktop.getDesktop().open(new File(fileName));
+//            }
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "❌ Lỗi khi xuất PDF: " + e.getMessage());
