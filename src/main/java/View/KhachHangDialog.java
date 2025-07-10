@@ -86,6 +86,15 @@ public class KhachHangDialog extends JDialog{
 
         // Actions
         btnLuu.addActionListener(e -> {
+            if (!isValidPhoneNumber(txtSoDienThoai.getText())) {
+                JOptionPane.showMessageDialog(this, "Số điện thoại không hợp lệ. Vui lòng nhập 10 chữ số và bắt đầu bằng 0.");
+                return;
+            }
+
+            if (!isValidEmail(txtEmail.getText())) {
+                JOptionPane.showMessageDialog(this, "Email không hợp lệ. Vui lòng nhập đúng định dạng email.");
+                return;
+            }
             confirmed = true;
             setVisible(false);
         });
@@ -139,6 +148,16 @@ public class KhachHangDialog extends JDialog{
     public void anTruongMaKH() {
         lblMaKH.setVisible(false);
         txtMaKH.setVisible(false);
+    }
+
+    private boolean isValidPhoneNumber(String phone) {
+        // SĐT Việt Nam: bắt đầu bằng 0, có 10 chữ số
+        return phone.matches("^0\\d{9}$");
+    }
+
+    private boolean isValidEmail(String email) {
+        // Định dạng email cơ bản
+        return email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$");
     }
 
 }

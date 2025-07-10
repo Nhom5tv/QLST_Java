@@ -12,14 +12,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.UIManager;
+import javax.swing.*;
 
 /**
  *
@@ -32,13 +25,6 @@ public class DiachiDialog extends JDialog{
     
     public DiachiDialog(JFrame parent, String title) {
         super(parent, title, true);
-
-        try {
-            UIManager.setLookAndFeel(new FlatLightLaf());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         initComponents();
         setLocationRelativeTo(parent);
     }
@@ -87,6 +73,12 @@ public class DiachiDialog extends JDialog{
 
         // Actions
         btnLuu.addActionListener(e -> {
+            String phone = txtPhone.getText().trim();
+            // Kiểm tra định dạng số điện thoại: 10 chữ số, bắt đầu bằng số 0
+            if (!phone.matches("^0\\d{9}$")) {
+                JOptionPane.showMessageDialog(this, "Số điện thoại không hợp lệ. Vui lòng nhập đúng 10 chữ số và bắt đầu bằng số 0.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             confirmed = true;
             setVisible(false);
         });

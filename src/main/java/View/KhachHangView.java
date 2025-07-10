@@ -25,16 +25,6 @@ public class KhachHangView extends JPanel {
 
     public KhachHangView() {
         setLayout(new BorderLayout());
-
-        try {
-            UIManager.setLookAndFeel(new FlatLightLaf());
-            UIManager.put("Component.arc", 12);
-            UIManager.put("Button.arc", 15);
-            UIManager.put("TextComponent.arc", 10);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         initUI();
     }
 
@@ -68,7 +58,6 @@ public class KhachHangView extends JPanel {
         for (JButton btn : new JButton[]{btnThem, btnXoa, btnXuatExcel}) {
             btn.setPreferredSize(new Dimension(100, 35));
         }
-//        buttonPanel.add(btnThem);
         buttonPanel.add(btnXoa);
         buttonPanel.add(btnXuatExcel);
         searchPanel.add(buttonPanel, BorderLayout.EAST);

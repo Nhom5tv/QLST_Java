@@ -21,15 +21,13 @@ import java.util.ArrayList;
 public class DiaChiController {
     private DiaChiView diaChiView;  
     private DiaChiDAO addressDAO;  
-    
-    // Constructor
+
     public DiaChiController(DiaChiView view) {
         this.diaChiView = view;
         this.addressDAO = new DiaChiDAO();
         
         // Thêm sự kiện cho các nút
         diaChiView.getAddBtn().addActionListener(e -> themDiaChi());
-        //diaChiView.getConfirmBtn().addActionListener(e -> xacNhanDiaChi());
         view.setConfirmBtnListener(e -> {
             // Kiểm tra các giá trị đã chọn
             if (view.getSelectedName() != null && view.getSelectedPhone() != null && view.getSelectedAddress() != null) {
@@ -117,23 +115,5 @@ public class DiaChiController {
             }
         }
     }
-    
-//    private void xacNhanDiaChi() {
-//        boolean isAddressSelected = false;
-//        String selectedName = diaChiView.getSelectedName();
-//        String selectedPhone = diaChiView.getSelectedPhone();
-//        String selectedAddress = diaChiView.getSelectedAddress();
-//
-//        if (selectedName != null && selectedPhone != null && selectedAddress != null) {
-//            String selectedAddressInfo = "Name: " + selectedName + ", Phone: " + selectedPhone + ", Address: " + selectedAddress;
-//            JOptionPane.showMessageDialog(diaChiView, "Địa chỉ đã chọn:\n" + selectedAddressInfo);
-//            // Gọi phương thức onAddressSelected từ view
-//            if (diaChiView.onAddressSelected != null) {
-//                diaChiView.onAddressSelected.actionPerformed(new java.awt.event.ActionEvent(diaChiView, 0, selectedAddressInfo));
-//            }
-//            diaChiView.dispose();
-//        } else {
-//            ThongBaodialog.showErrorDialog(diaChiView, "Bạn chưa chọn địa chỉ nào.", "Cảnh báo");
-//        }
-//    }
+
 }

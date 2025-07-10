@@ -16,14 +16,12 @@ import DAO.TonKhoDAO;
 import Model.GioHang;
 import View.GioHangView;
 import View.HoaDonOrderView;
-
-import java.awt.event.ActionEvent;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.List;
-import javax.swing.JOptionPane;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import javax.swing.*;
+
 
 public class GioHangController {
     private GioHangView view;
@@ -40,23 +38,6 @@ public class GioHangController {
     }
 
     private void attachEventListeners() {
-        view.addRemoveItemListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Đã click nút XÓA!");
-                int maGH = Integer.parseInt(e.getActionCommand());
-                int confirm = JOptionPane.showConfirmDialog(view, "Bạn có chắc muốn xóa sản phẩm này?", "Xác nhận", JOptionPane.YES_NO_OPTION);
-                if (confirm == JOptionPane.YES_OPTION) {
-                    boolean success = dao.deleteItemById(maGH);
-                    if (success) {
-                        JOptionPane.showMessageDialog(view, "Xóa thành công!");
-                        loadCartData(); // Refresh UI
-                    } else {
-                        JOptionPane.showMessageDialog(view, "Xóa thất bại!");
-                    }
-                }
-            }
-        });
         view.setRemoveListener(removeListener);
         // Lắng nghe sự thay đổi số lượng
         view.setQuantityChangeListener((maGH, newQty, maSP) -> {
@@ -93,31 +74,45 @@ public class GioHangController {
             new HoaDonOrderController(new HoaDonOrderDAO(), new ChiTietHoaDonOrderDAO(), orderView, maKH);
             orderView.setVisible(true);
         });
-        view.addCheckAllListener();
+        view.getCbxAll().addActionListener(e -> {
+            boolean isSelected = view.getCbxAll().isSelected();
+            // Đặt trạng thái chọn cho tất cả các item trong giỏ hàng
+            for (Component comp : view.getPnProducts().getComponents()) {
+                if (comp instanceof JPanel productPanel) {
+                    Component[] productComponents = productPanel.getComponents();
+                    for (Component inner : productComponents) {
+                        if (inner instanceof JPanel leftPanel) {
+                            for (Component sub : leftPanel.getComponents()) {
+                                if (sub instanceof JCheckBox cbxItem) {
+                                    cbxItem.setSelected(isSelected);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            // Cập nhật tổng tiền
+            view.updateTotal(view.getCartItems());
+        });
     }
 
-
-//    private void loadCartData() {
-//        java.util.List<GioHang> cartItems = dao.getALLGioHangByID(maKH);
-//        view.displayCartItems(cartItems);
-//        //attachEventListeners();
-//    }
-private final ActionListener removeListener = new ActionListener() {
-    @Override
-    public void actionPerformed(java.awt.event.ActionEvent e) {
-        int maGH = Integer.parseInt(e.getActionCommand());
-        int confirm = javax.swing.JOptionPane.showConfirmDialog(view, "Bạn có chắc muốn xóa sản phẩm này?", "Xác nhận", javax.swing.JOptionPane.YES_NO_OPTION);
-        if (confirm == javax.swing.JOptionPane.YES_OPTION) {
-            boolean success = dao.deleteItemById(maGH);
-            if (success) {
-                javax.swing.JOptionPane.showMessageDialog(view, "Xóa thành công!");
-                loadCartData(); // gọi lại để cập nhật View
-            } else {
-                javax.swing.JOptionPane.showMessageDialog(view, "Xóa thất bại!");
+    private final ActionListener removeListener = new ActionListener() {
+        @Override
+        public void actionPerformed(java.awt.event.ActionEvent e) {
+            int maGH = Integer.parseInt(e.getActionCommand());
+            int confirm = javax.swing.JOptionPane.showConfirmDialog(view, "Bạn có chắc muốn xóa sản phẩm này?", "Xác nhận", javax.swing.JOptionPane.YES_NO_OPTION);
+            if (confirm == javax.swing.JOptionPane.YES_OPTION) {
+                boolean success = dao.deleteItemById(maGH);
+                if (success) {
+                    javax.swing.JOptionPane.showMessageDialog(view, "Xóa thành công!");
+                    loadCartData(); // gọi lại để cập nhật View
+                } else {
+                    javax.swing.JOptionPane.showMessageDialog(view, "Xóa thất bại!");
+                }
             }
         }
-    }
-};
+    };
+
     private void loadCartData() {
         List<GioHang> cartItems = dao.getALLGioHangByID(maKH);
         view.displayCartItems(cartItems, removeListener); // fix: truyền listener

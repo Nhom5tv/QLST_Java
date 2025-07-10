@@ -200,14 +200,6 @@ public class HoaDonOrderView extends JFrame {
         orderBtn.setForeground(Color.WHITE);
         orderBtn.setFont(new Font("Arial", Font.BOLD, 16));
         orderBtn.setPreferredSize(new Dimension(200, 40));
-//        orderBtn.addActionListener(e -> {
-//            new HoaDonOrderController(
-//                    new HoaDonOrderDAO(),
-//                    new ChiTietHoaDonOrderDAO(),
-//                    this,
-//                    MaKH
-//            );
-//        });
 
         JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.add(summaryPanel, BorderLayout.CENTER);

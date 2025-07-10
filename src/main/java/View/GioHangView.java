@@ -4,17 +4,11 @@
  */
 package View;
 
-import Controller.GioHangController;
-import Controller.HoaDonOrderController;
-import DAO.ChiTietHoaDonOrderDAO;
-import DAO.GioHangDAO;
-import DAO.HoaDonOrderDAO;
 import Model.GioHang;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -25,14 +19,10 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
 /**
  *
  * @author Admin
@@ -49,15 +39,6 @@ public class GioHangView extends JFrame {
     private QuantityChangeListener quantityChangeListener;
     private ActionListener removeListener;
     private int MaKH;
-    
-
-    public List<GioHang> getCartItems() {
-        return cartItems;
-    }
-
-    public void setQuantityChangeListener(QuantityChangeListener listener) {
-        this.quantityChangeListener = listener;
-    }
 
     public GioHangView(int MaKH) {
         this.MaKH = MaKH;
@@ -88,18 +69,6 @@ public class GioHangView extends JFrame {
         pnSummary.add(cbxAll, BorderLayout.WEST);
         lblTotal = new JLabel("Tổng cộng: 0 VND");
         btnCheckout = new JButton("Thanh toán");
-//        btnCheckout.addActionListener(e -> {
-//            List<GioHang> selectedItems = getSelectedCartItems();
-//
-//            if (selectedItems.isEmpty()) {
-//                JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm để thanh toán.");
-//            } else {
-//                // Pass the selected items to the HoaDonOrderView
-//                HoaDonOrderView orderView = new HoaDonOrderView(selectedItems, this, this, this.MaKH);
-//                new HoaDonOrderController(new HoaDonOrderDAO(), new ChiTietHoaDonOrderDAO(), orderView, this.MaKH);
-//                orderView.setVisible(true);
-//            }
-//        });
 
         JPanel rightPanel = new JPanel();
         rightPanel.add(lblTotal);
@@ -116,7 +85,6 @@ public class GioHangView extends JFrame {
         for (GioHang item : cartItems) {
             System.out.println("Sản phẩm: " + item.getTenSp() + ", Số lượng: " + item.getSoLuong()); // Gỡ lỗi
             JPanel productPanel = createProductPanel(item, removeListener);
-//            JPanel productPanel = createProductPanel(item);
             productPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
             pnProducts.add(productPanel);
             JPanel leftPanel = (JPanel) productPanel.getComponent(0);
@@ -128,6 +96,7 @@ public class GioHangView extends JFrame {
         pnProducts.repaint();
     }
 
+    //Tạo productPanel chứa 1 sản phẩm.
     private JPanel createProductPanel(GioHang item, ActionListener removeListener) {
         JPanel productPanel = new JPanel(new BorderLayout());
         JCheckBox cbxItem = new JCheckBox();
@@ -256,65 +225,17 @@ public class GioHangView extends JFrame {
 
     public List<GioHang> getSelectedCartItems() {
         List<GioHang> selectedItems = new ArrayList<>();
-
         // Lặp qua tất cả các sản phẩm trong giỏ hàng
         for (int i = 0; i < pnProducts.getComponentCount(); i++) {
             JPanel productPanel = (JPanel) pnProducts.getComponent(i);
             JPanel leftPanel = (JPanel) productPanel.getComponent(0);
             JCheckBox itemCheckBox = (JCheckBox) leftPanel.getComponent(0);
-
             // Kiểm tra xem sản phẩm có được chọn hay không
             if (itemCheckBox.isSelected()) {
                 selectedItems.add(cartItems.get(i)); // Thêm sản phẩm vào danh sách
             }
         }
-
         return selectedItems;
-    }
-
-    public void addRemoveItemListener(ActionListener listener) {
-        for (java.awt.Component comp : pnProducts.getComponents()) {
-            if (comp instanceof JPanel productPanel) {
-                java.awt.Component[] innerComps = productPanel.getComponents();
-                for (java.awt.Component innerComp : innerComps) {
-                    if (innerComp instanceof JPanel infoPanel) {
-                        for (java.awt.Component subComp : infoPanel.getComponents()) {
-                            if (subComp instanceof JPanel removePanel) {
-                                for (java.awt.Component btnComp : removePanel.getComponents()) {
-                                    if (btnComp instanceof JButton button && "Xóa".equals(button.getText())) {
-                                        button.addActionListener(listener);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    public void addCheckAllListener() {
-        cbxAll.addActionListener(e -> {
-            boolean isSelected = cbxAll.isSelected();
-
-            for (Component comp : pnProducts.getComponents()) {
-                if (comp instanceof JPanel productPanel) {
-                    Component[] productComponents = productPanel.getComponents();
-                    for (Component inner : productComponents) {
-                        if (inner instanceof JPanel leftPanel) {
-                            for (Component sub : leftPanel.getComponents()) {
-                                if (sub instanceof JCheckBox cbxItem) {
-                                    System.out.println("Setting cbxItem = " + isSelected);
-                                    cbxItem.setSelected(isSelected); // ✅ Đặt lại trạng thái
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            updateTotal(cartItems); // ✅ Cập nhật lại tổng giá
-        });
     }
 
     private void addItemCheckBoxListener(JCheckBox cbxItem, GioHang item) {
@@ -335,11 +256,6 @@ public class GioHangView extends JFrame {
         btnCheckout.addActionListener(listener);
     }
 
-    // Thêm getter cho nút thanh toán (nếu cần)
-    public JButton getCheckoutButton() {
-        return btnCheckout;
-    }
-
     public void updateLocalQuantity(int maGH, int newQty) {
         for (GioHang gh : cartItems) {
             if (gh.getMaGH() == maGH) {
@@ -351,5 +267,20 @@ public class GioHangView extends JFrame {
 
     public void setRemoveListener(ActionListener listener) {
         this.removeListener = listener;
+    }
+
+    public JCheckBox getCbxAll() {
+        return cbxAll;
+    }
+
+    public JPanel getPnProducts() {
+        return pnProducts;
+    }
+    public List<GioHang> getCartItems() {
+        return cartItems;
+    }
+
+    public void setQuantityChangeListener(QuantityChangeListener listener) {
+        this.quantityChangeListener = listener;
     }
 }

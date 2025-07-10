@@ -17,7 +17,7 @@ public class GioHang {
     private String TenSp;
     private double giaban;
     private byte[] anh;
-    private boolean isPaid; 
+    private boolean isPaid;
 
     public GioHang() {
     }
@@ -95,8 +95,6 @@ public class GioHang {
     public void setIsPaid(boolean isPaid) {
         this.isPaid = isPaid;
     }
-    
-    
 }
 
 

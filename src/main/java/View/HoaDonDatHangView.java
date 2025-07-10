@@ -24,15 +24,6 @@ public class HoaDonDatHangView extends JPanel{
     private JTextField txtSearch;
     public HoaDonDatHangView(){
         setLayout(new BorderLayout());
-        try {
-            UIManager.setLookAndFeel(new FlatLightLaf());
-            UIManager.put("Component.arc", 12);
-            UIManager.put("Button.arc", 15);
-            UIManager.put("TextComponent.arc", 10);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         initUI();
     }
     private void initUI() {
