@@ -5,8 +5,7 @@
 package Controller;
 
 import Bridge.DBConnection;
-import DAO.ChiTietHoaDonOrderDAO;
-import DAO.HoaDonOrderDAO;
+import DAO.*;
 import Model.ChiTietHoaDonOrder;
 import Model.HoaDonOrder;
 import Model.GioHang;
@@ -29,10 +28,6 @@ import com.itextpdf.text.pdf.PdfWriter;
 import java.util.ArrayList;
 
 import Controller.DiaChiController;
-import DAO.GioHangDAO;
-import DAO.KhachHangDAO;
-import DAO.TaiChinhDAO;
-import DAO.TonKhoDAO;
 import Model.KhachHang;
 import Model.TonKho;
 import View.GioHangView;
@@ -88,6 +83,7 @@ public class HoaDonOrderController {
         this.MaKH = MaKH;
         this.MaKM = MaKM;
         this.taiChinhController = taiChinhController;
+        loadDefaultAddress();
         try {
             this.tkDAO = new TonKhoDAO(DBConnection.getConnection());
             this.tkController = tkController;
@@ -184,6 +180,16 @@ public class HoaDonOrderController {
             });
         }
     }
+
+    private void loadDefaultAddress() {
+        int maKH = view.getDiaChi() != null ? view.getDiaChi().getCustomerId() : view.getSelectedItems().get(0).getMaKH();
+        DiaChiDAO diaChiDAO = new DiaChiDAO();
+        DiaChi diaChi = diaChiDAO.getDefaultDiaChi(maKH);
+        if (diaChi != null) {
+            view.setAddressInfo(diaChi);
+        }
+    }
+
 
     public boolean themHoaDon(List<ChiTietHoaDonOrder> chiTietHoaDons, HoaDonOrder hoaDon) {
         hoaDon.setMaKhachHang(MaKH);
@@ -290,9 +296,13 @@ public class HoaDonOrderController {
             document.close();
             JOptionPane.showMessageDialog(null, "✅ Hóa đơn đã được lưu trên Desktop!");
 
-//            if (Desktop.isDesktopSupported()) {
-//                Desktop.getDesktop().open(new File(fileName));
-//            }
+            if (Desktop.isDesktopSupported()) {
+                try {
+                    Desktop.getDesktop().open(new File(filePath));
+                } catch (IOException e) {
+                    JOptionPane.showMessageDialog(null, "❌ Lỗi khi mở file PDF: " + e.getMessage());
+                }
+            }
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "❌ Lỗi khi xuất PDF: " + e.getMessage());

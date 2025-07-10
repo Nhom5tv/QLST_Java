@@ -85,5 +85,26 @@ public class DiaChiDAO {
         }
         return false;
     }
-    
+    // Lấy địa chỉ đầu tiên làm địa chỉ mặc định (có thể sửa lại nếu có cột is_default)
+    public DiaChi getDefaultDiaChi(int customerId) {
+        String sql = "SELECT * FROM diachigiaohang WHERE MaKH = ? ORDER BY Ma_dia_chi ASC";// hoặc ORDER BY NgayTao DESC nếu có
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, customerId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new DiaChi(
+                        rs.getInt("Ma_dia_chi"),
+                        rs.getString("TenNguoiNhan"),
+                        rs.getString("SoDienThoai"),
+                        rs.getString("DiaChiChiTiet"),
+                        rs.getInt("MaKH")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

@@ -281,6 +281,15 @@ public class HoaDonOrderView extends JFrame {
         return (text != null && !text.equalsIgnoreCase("Chưa chọn")) ? text : null;
     }
 
+    public void setAddressInfo(DiaChi diaChi) {
+        if (diaChi != null) {
+            selectedDiaChi = diaChi;
+            nameLabel.setText(diaChi.getName() + " (" + diaChi.getPhoneNumber() + ")");
+            addressLabel.setText(diaChi.getDetailAddress());
+        }
+    }
+
+
     public BigDecimal getTotalAmount() {
         int total = Math.max(getTotalItemAmount() - discountValue, 0);
         return BigDecimal.valueOf(total);

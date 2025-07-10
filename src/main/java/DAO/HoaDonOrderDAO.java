@@ -5,8 +5,11 @@
 package DAO;
 
 import Bridge.DBConnection;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
+import Model.DiaChi;
 import Model.HoaDonOrder;
 /**
  *
@@ -88,9 +91,10 @@ public class HoaDonOrderDAO {
             e.printStackTrace();
             return false;
         }
-        
+
     }
-   public List<HoaDonOrder> getByMaKhachHang(int maKH) {
+
+    public List<HoaDonOrder> getByMaKhachHang(int maKH) {
         List<HoaDonOrder> list = new ArrayList<>();
         String sql = "SELECT * FROM hdorder WHERE ma_khach_hang = ? ORDER BY ngay_tao DESC";
 
