@@ -83,12 +83,31 @@ public class XuatHangLenKeDialog extends JDialog {
     public JButton getBtnHuy() {
         return btnHuy;
     }
-    public void addXacNhanListener(ActionListener listener) {
-        btnXacNhan.addActionListener(listener);
-    }
+//    public void addXacNhanListener(ActionListener listener) {
+//        btnXacNhan.addActionListener(listener);
+//    }
+public void addXacNhanListener(ActionListener listener) {
+    btnXacNhan.addActionListener(e -> {
+        if (!validateSoLuong()) return; // kiểm tra đầu vào
+        listener.actionPerformed(e);    // hợp lệ thì mới chạy tiếp
+    });
+}
 
     public void addHuyListener(ActionListener listener) {
         btnHuy.addActionListener(listener);
+    }
+    public boolean validateSoLuong() {
+        int soLuong = getSoLuongMuonChuyen();
+        int max = (Integer)((SpinnerNumberModel)spnSoLuong.getModel()).getMaximum();
+        int min = (Integer)((SpinnerNumberModel)spnSoLuong.getModel()).getMinimum();
+        if (soLuong < min || soLuong > max) {
+            JOptionPane.showMessageDialog(this,
+                    "Số lượng phải từ " + min + " đến " + max + "!",
+                    "Lỗi nhập liệu",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
     }
 
 }

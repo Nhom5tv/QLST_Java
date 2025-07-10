@@ -46,7 +46,7 @@ public class TaiChinhView extends JPanel {
         topPanel.setBackground(Color.WHITE);
         topPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        JLabel lblSearch = new JLabel("\uD83D\uDD0D Tìm kiếm:");
+        JLabel lblSearch = new JLabel("");
         txtTimKiem = new JTextField();
         txtTimKiem.putClientProperty("JTextField.placeholderText", "Tìm kiếm theo mô tả hoặc mã...");
         txtTimKiem.setPreferredSize(new Dimension(220, 35));
@@ -56,11 +56,11 @@ public class TaiChinhView extends JPanel {
         searchPanel.add(lblSearch);
         searchPanel.add(txtTimKiem);
 
-        btnTimKiem = createButton("\uD83D\uDD0E Tìm", new Color(52, 152, 219));
-        btnThem = createButton("➕ Thêm", new Color(46, 204, 113));
-        btnXoa = createButton("❌ Xoá", new Color(231, 76, 60));
-        btnXuatExcel = createButton("\uD83D\uDCC1 Xuất Excel", new Color(52, 152, 219));
-        btnXemBieuDo = createButton("\uD83D\uDCCA Xem Biểu đồ", new Color(155, 89, 182));
+        btnTimKiem = createButton("Tìm", new Color(52, 152, 219));
+        btnThem = createButton("Thêm", new Color(46, 204, 113));
+        btnXoa = createButton("Xoá", new Color(231, 76, 60));
+        btnXuatExcel = createButton("Xuất Excel", new Color(52, 152, 219));
+        btnXemBieuDo = createButton("Xem Biểu đồ", new Color(155, 89, 182));
        
 
 

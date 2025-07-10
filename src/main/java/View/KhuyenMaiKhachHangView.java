@@ -23,14 +23,13 @@ public class KhuyenMaiKhachHangView extends JPanel {
     private Consumer<String> onVoucherAppliedListener;
 
     public KhuyenMaiKhachHangView() {
-    initLookAndFeel();
-    initUI();
-}
-
+        initLookAndFeel();
+        initUI();
+    }
 
 
     public KhuyenMaiKhachHangView(ActionListener applyListener) {
-       
+
 
         // Gán sự kiện cho nút Áp dụng
         btnApDung.addActionListener(applyListener);
@@ -61,13 +60,13 @@ public class KhuyenMaiKhachHangView extends JPanel {
                 BorderFactory.createLineBorder(new Color(230, 230, 230)),
                 new EmptyBorder(15, 15, 15, 15)));
 
-        JLabel lblSearch = new JLabel("🔍 Tìm kiếm:");
+        JLabel lblSearch = new JLabel("Tìm kiếm:");
         txtTimKiem = new JTextField();
         txtTimKiem.putClientProperty("JTextField.placeholderText", "Nhập tên hoặc mã khuyến mãi...");
         txtTimKiem.setPreferredSize(new Dimension(220, 35));
 
-        btnTimKiem = createButton("🔎 Tìm", new Color(52, 152, 219));
-        btnApDung = createButton("✅ Áp dụng", new Color(46, 204, 113));
+        btnTimKiem = createButton("Tìm", new Color(52, 152, 219));
+        btnApDung = createButton("Áp dụng", new Color(46, 204, 113));
 
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
         searchPanel.setBackground(Color.WHITE);
@@ -183,18 +182,19 @@ public class KhuyenMaiKhachHangView extends JPanel {
     public String getSearchKeyword() {
         return txtTimKiem.getText().trim();
     }
-   
 
-   public void setOnVoucherAppliedListener(Consumer<String> listener) {
-    this.onVoucherAppliedListener = listener;
-}
+
+    public void setOnVoucherAppliedListener(Consumer<String> listener) {
+        this.onVoucherAppliedListener = listener;
+    }
 
     public void addApplyListener(ActionListener listener) {
         btnApDung.addActionListener(listener);
     }
-  public void addSearchListener(ActionListener listener) {
-    btnTimKiem.addActionListener(listener);
-}
+
+    public void addSearchListener(ActionListener listener) {
+        btnTimKiem.addActionListener(listener);
+    }
 
 
     // Trả về mã khuyến mãi đang được chọn

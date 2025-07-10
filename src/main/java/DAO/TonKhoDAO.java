@@ -172,7 +172,7 @@ public class TonKhoDAO implements DAO<TonKho> {
 
         return danhSach;
     }
-    
+
     // Giảm tồn kho sau khi nhấn nút thanh toán bên siêu thị (thu ngân)
     public boolean giamTonTheoTonKho(TonKho tk) {
         int sl = tk.getSoLuongTon(); // đang dùng làm số lượng cần trừ
@@ -301,5 +301,37 @@ public class TonKhoDAO implements DAO<TonKho> {
         ps.setInt(6, tk.getSoLuongKhaDung());
         ps.setInt(7, tk.getSoLuongDangGiaoDich());
         ps.setInt(8, tk.getNguongCanhBao());
+    }
+
+    // lấy ra danh sách các mã lô để trừ tòn kho
+    public List<TonKho> getLoTruTon_TonKho(int maSP, int soLuongCan) {
+        List<TonKho> danhSach = new ArrayList<>();
+        String sql = """
+            SELECT tk.ma_lo, tk.so_luong_kha_dung
+            FROM ton_kho tk
+            JOIN lo_hang lh ON tk.ma_lo = lh.ma_lo_hang
+            WHERE tk.ma_san_pham = ? AND tk.so_luong_kha_dung > 0
+            ORDER BY lh.han_su_dung ASC
+        """;
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, maSP);
+            ResultSet rs = ps.executeQuery();
+
+            int remaining = soLuongCan;
+            while (rs.next() && remaining > 0) {
+                int maLo = rs.getInt("ma_lo");
+                int soLuongTrongLo = rs.getInt("so_luong_kha_dung");
+
+                int soLuongTru = Math.min(remaining, soLuongTrongLo);
+                danhSach.add(new TonKho(maSP, maLo, soLuongTru));
+
+                remaining -= soLuongTru;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return danhSach;
     }
 }

@@ -40,7 +40,7 @@ public class SanPhamController {
     private SanPhamView view;
     private SanPhamDAO dao;
     private DanhMucSanPhamDAO dmDao;
-  
+
 
     public SanPhamController(SanPhamView view, Connection conn) {
         this.view = view;
@@ -53,53 +53,53 @@ public class SanPhamController {
     private void initController() {
         // thêm mới
         view.getBtnThem().addActionListener(e -> onAdd());
-        
+
         view.getTable().addMouseListener(new java.awt.event.MouseAdapter() {
-        @Override
-        public void mouseClicked(java.awt.event.MouseEvent e) {
-            if (e.getClickCount() == 2) {
-                onEdit(); // double click để sửa
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    onEdit(); // double click để sửa
+                }
             }
-        }
-    });
+        });
 
 
         view.addDeleteListener(e -> onDelete());
-        
+
         //tìm kiếm
         view.addSearchListener(new DocumentListener() {
-        @Override
-        public void insertUpdate(DocumentEvent e) {
-            onSearch();
-        }
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                onSearch();
+            }
 
-        @Override
-        public void removeUpdate(DocumentEvent e) {
-            onSearch();
-        }
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                onSearch();
+            }
 
-        @Override
-        public void changedUpdate(DocumentEvent e) {
-            onSearch();
-        }
-    });
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                onSearch();
+            }
+        });
         // đổ dữ liệu vào combo
         List<String> tenDanhMucs = dmDao.getAll()
-            .stream()
-            .map(DanhMucSanPham::getTenDanhMuc)
-            .toList(); 
+                .stream()
+                .map(DanhMucSanPham::getTenDanhMuc)
+                .toList();
 
         view.setDanhMucFilterOptions(tenDanhMucs);
-        
-        
+
+
 
         //lọc
         view.getBtnResetFilter().addActionListener(e -> {
-        view.getCboDanhMucFilter().setSelectedIndex(0);
-        view.getCboTrangThaiFilter().setSelectedIndex(0);
-        view.getSearchTextField().setText(""); 
-        onFilter(); // gọi lại hàm lọc để reset về trạng thái ban đầu
-    });
+            view.getCboDanhMucFilter().setSelectedIndex(0);
+            view.getCboTrangThaiFilter().setSelectedIndex(0);
+            view.getSearchTextField().setText("");
+            onFilter(); // gọi lại hàm lọc để reset về trạng thái ban đầu
+        });
         view.getCboDanhMucFilter().addActionListener(e -> onFilter());
         view.getCboTrangThaiFilter().addActionListener(e -> onFilter());
 
@@ -112,57 +112,57 @@ public class SanPhamController {
 
         // nhập xuất Excel
         view.getBtnExcel().addActionListener(e -> {
-        JPopupMenu menu = new JPopupMenu();
+            JPopupMenu menu = new JPopupMenu();
 
-        JMenuItem importItem = new JMenuItem("📥 Nhập từ Excel");
-        JMenuItem exportItem = new JMenuItem("📤 Xuất ra Excel");
+            JMenuItem importItem = new JMenuItem("📥 Nhập từ Excel");
+            JMenuItem exportItem = new JMenuItem("📤 Xuất ra Excel");
 
-        importItem.addActionListener(ev -> importSanPhamFromExcel());
-        exportItem.addActionListener(ev -> exportSanPhamToExcel());
+            importItem.addActionListener(ev -> importSanPhamFromExcel());
+            exportItem.addActionListener(ev -> exportSanPhamToExcel());
 
-        menu.add(importItem);
-        menu.add(exportItem);
+            menu.add(importItem);
+            menu.add(exportItem);
 
-        // Hiển thị menu ngay dưới nút Excel
-        menu.show(view.getBtnExcel(), 0, view.getBtnExcel().getHeight());
-    });
+            // Hiển thị menu ngay dưới nút Excel
+            menu.show(view.getBtnExcel(), 0, view.getBtnExcel().getHeight());
+        });
     }
 
 
 
-   private void loadSanPhamToTable() {
+    private void loadSanPhamToTable() {
         List<SanPham> list = dao.getAll();
         populateTable(list);
     }
 
     private void populateTable(List<SanPham> list) {
-     DefaultTableModel model = view.getTableModel();
-     model.setRowCount(0);
+        DefaultTableModel model = view.getTableModel();
+        model.setRowCount(0);
 
-     for (SanPham sp : list) {
-         // Xử lý ảnh (byte[] → ImageIcon)
-         ImageIcon icon = null;
-         byte[] imageBytes = sp.getHinhAnh();
-         if (imageBytes != null) {
-             ImageIcon temp = new ImageIcon(imageBytes);
-             Image scaled = temp.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-             icon = new ImageIcon(scaled);
-         }
+        for (SanPham sp : list) {
+            // Xử lý ảnh (byte[] → ImageIcon)
+            ImageIcon icon = null;
+            byte[] imageBytes = sp.getHinhAnh();
+            if (imageBytes != null) {
+                ImageIcon temp = new ImageIcon(imageBytes);
+                Image scaled = temp.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+                icon = new ImageIcon(scaled);
+            }
 
-         // Thêm vào bảng
-         model.addRow(new Object[]{
-             false,
-             sp.getMaSanPham(),  // mã sp ẩn id tự tăng
-             icon,
-             sp.getMaNgoai(),
-             sp.getTenSanPham(),
-             sp.getGiaGoc(),
-             sp.getGiaBan(),
-             sp.getDonViTinh(),
-             sp.getSoLuongTon()
-         });
-     }
- }
+            // Thêm vào bảng
+            model.addRow(new Object[]{
+                    false,
+                    sp.getMaSanPham(),  // mã sp ẩn id tự tăng
+                    icon,
+                    sp.getMaNgoai(),
+                    sp.getTenSanPham(),
+                    sp.getGiaGoc(),
+                    sp.getGiaBan(),
+                    sp.getDonViTinh(),
+                    sp.getSoLuongTon()
+            });
+        }
+    }
 
     private void onAdd() {
         ChiTietSanPhamDialog dialog = new ChiTietSanPhamDialog(null);
@@ -218,7 +218,7 @@ public class SanPhamController {
             JOptionPane.showMessageDialog(view, "❌ Không tìm thấy sản phẩm để sửa!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
-       
+
 
         SanPham sp = opt.get();
         ChiTietSanPhamDialog dialog = new ChiTietSanPhamDialog(null);
@@ -230,7 +230,7 @@ public class SanPhamController {
         dialog.setMaSanPham(sp.getMaSanPham()); // Lưu lại ID
         dialog.getTxtMaSP().setText(sp.getMaNgoai());
         dialog.getTxtMaSP().setEditable(false);  // không sửa mã ngoại
-        dialog.getTxtMaSP().setFocusable(false); 
+        dialog.getTxtMaSP().setFocusable(false);
         dialog.getTxtTenSP().setText(sp.getTenSanPham());
         dialog.getTxtDonVi().setText(sp.getDonViTinh());
         dialog.getTxtGiaGoc().setText(sp.getGiaGoc().toString());
@@ -266,10 +266,9 @@ public class SanPhamController {
         dialog.getBtnLuu().addActionListener(ev -> {
             SanPham updated = getSanPhamFromDialog(dialog);
             if (updated != null) {
-                
+
                 updated.setMaSanPham(sp.getMaSanPham()); // cần để update đúng dòng
                 updated.setMaNgoai(sp.getMaNgoai());
-                System.out.println("bao quan update"+ updated.getBaoQuan());
                 dao.update(updated);
                 dialog.dispose();
                 loadSanPhamToTable();
@@ -287,7 +286,7 @@ public class SanPhamController {
         int deleted = 0;
 
         int confirm = JOptionPane.showConfirmDialog(
-            view, "Bạn có chắc chắn muốn xoá các sản phẩm đã chọn?", "Xác nhận xoá", JOptionPane.YES_NO_OPTION
+                view, "Bạn có chắc chắn muốn xoá các sản phẩm đã chọn?", "Xác nhận xoá", JOptionPane.YES_NO_OPTION
         );
         if (confirm != JOptionPane.YES_OPTION) return;
 
@@ -306,7 +305,7 @@ public class SanPhamController {
         if (deleted > 0) {
             JOptionPane.showMessageDialog(view, "✔️ Đã xoá " + deleted + " sản phẩm.");
         } else {
-            JOptionPane.showMessageDialog(view, "⚠️ Không có sản phẩm nào được chọn để xoá.");
+            JOptionPane.showMessageDialog(view, "⚠️ Sản phẩm còn trong tồn kho nên không thể xoá.");
         }
     }
     private void onSearch() {
@@ -350,19 +349,19 @@ public class SanPhamController {
         String xuatXu = dialog.getTxtXuatXu().getText().trim();
 
         if (tenSP.isEmpty() || donVi.isEmpty() || giaGocStr.isEmpty() ||
-            giaBanStr.isEmpty() ) {
+                giaBanStr.isEmpty() ) {
             JOptionPane.showMessageDialog(dialog, "⚠️ Vui lòng nhập đầy đủ thông tin bắt buộc!",
                     "Thiếu thông tin", JOptionPane.WARNING_MESSAGE);
             return null;
         }
 
         double giaGoc, giaBan;
-        
+
 
         try {
             giaGoc = Double.parseDouble(giaGocStr);
             giaBan = Double.parseDouble(giaBanStr);
-            
+
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(dialog, "⚠️ Giá phải là số hợp lệ!",
                     "Lỗi định dạng", JOptionPane.WARNING_MESSAGE);
@@ -379,7 +378,7 @@ public class SanPhamController {
             sp.setMaDanhMuc(selected.getMaDanhMuc());
         }
         System.out.println("Selected danh muc: " + dialog.getCboDanhMuc().getSelectedItem());
-System.out.println("Class: " + dialog.getCboDanhMuc().getSelectedItem().getClass());
+        System.out.println("Class: " + dialog.getCboDanhMuc().getSelectedItem().getClass());
         sp.setDonViTinh(donVi);
         sp.setMoTa(moTa);
         sp.setGiaGoc(BigDecimal.valueOf(giaGoc));
@@ -393,7 +392,7 @@ System.out.println("Class: " + dialog.getCboDanhMuc().getSelectedItem().getClass
         sp.setBaoQuan(baoQuan);
 
         // Xử lý ảnh (nếu có)
-       Icon icon = dialog.getLblPreviewImage().getIcon();
+        Icon icon = dialog.getLblPreviewImage().getIcon();
         if (icon instanceof ImageIcon imageIcon && imageIcon.getIconWidth() > 0 && imageIcon.getIconHeight() > 0) {
             Image img = imageIcon.getImage();
             sp.setHinhAnh(convertImageToBytes(img));
@@ -404,7 +403,7 @@ System.out.println("Class: " + dialog.getCboDanhMuc().getSelectedItem().getClass
 
         return sp;
     }
-     private void onFilter() {
+    private void onFilter() {
         String keyword = view.getSearchText().trim().toLowerCase();
         String selectedDanhMuc = (String) view.getCboDanhMucFilter().getSelectedItem();
         String selectedTrangThai = (String) view.getCboTrangThaiFilter().getSelectedItem();
@@ -418,7 +417,7 @@ System.out.println("Class: " + dialog.getCboDanhMuc().getSelectedItem().getClass
     }
 
 
-    
+
 
     private String getCellValue(Cell cell) {
         if (cell == null) return "";
@@ -448,9 +447,9 @@ System.out.println("Class: " + dialog.getCboDanhMuc().getSelectedItem().getClass
             Sheet sheet = workbook.createSheet("SanPham");
 
             String[] columns = {
-                "Mã SP", "Tên sản phẩm", "Mã danh mục", "Giá gốc", "Giá bán",
-                "Mã vạch", "Đơn vị tính", "Mô tả", "Trạng thái", "Thương hiệu",
-                "Xuất xứ", "Thành phần", "HDSD", "Bảo quản", "Tồn kho"
+                    "Mã SP", "Tên sản phẩm", "Mã danh mục", "Giá gốc", "Giá bán",
+                    "Mã vạch", "Đơn vị tính", "Mô tả", "Trạng thái", "Thương hiệu",
+                    "Xuất xứ", "Thành phần", "HDSD", "Bảo quản", "Tồn kho"
             };
 
             Row header = sheet.createRow(0);
@@ -553,7 +552,7 @@ System.out.println("Class: " + dialog.getCboDanhMuc().getSelectedItem().getClass
                         sp.setMaNgoai(autoCode);
                         dao.updateMaNgoai(sp); // cập nhật mã ngoại
                     }
-                                    }
+                }
 
                 JOptionPane.showMessageDialog(null, "✅ Nhập sản phẩm từ Excel thành công!");
                 loadSanPhamToTable(); // Refresh bảng
@@ -564,7 +563,7 @@ System.out.println("Class: " + dialog.getCboDanhMuc().getSelectedItem().getClass
         }
     }
 
-    
 
-  
+
+
 }

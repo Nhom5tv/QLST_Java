@@ -141,6 +141,26 @@ public class TonKhoController {
 
         dialog.addXacNhanListener(e -> {
             int soLuong = dialog.getSoLuongMuonChuyen();
+            if (!dialog.validateSoLuong()) return;
+            System.out.println("số lượng: "+soLuong);
+            System.out.println("Trong kho: "+trongKho);
+            // 1. Số lượng xuất phải là số nguyên dương
+            if (soLuong <= 0) {
+                JOptionPane.showMessageDialog(dialog, "Số lượng xuất phải lớn hơn 0!", "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // 2. Không vượt quá số lượng trong kho
+            if (soLuong > trongKho) {
+                JOptionPane.showMessageDialog(dialog, "Số lượng xuất không được vượt quá số lượng trong kho!", "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // 3. Nếu trong kho = 0 thì không được xuất
+            if (trongKho == 0) {
+                JOptionPane.showMessageDialog(dialog, "Không còn hàng trong kho để xuất!", "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             if (dao.chuyenHangRaKe(maSP, maLo, soLuong)) {
                 JOptionPane.showMessageDialog(view, "✅ Xuất hàng thành công!");
                 dialog.dispose();
@@ -183,6 +203,42 @@ public class TonKhoController {
         dialog.getBtnXacNhan().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+
+                int tongDialog = dialog.getTong();
+                int trenKeDialog = dialog.getTrenKe();
+                int trongKhoDialog = dialog.getTrongKho();
+                int khaDungDialog = dialog.getKhaDung();
+                int dangGiaoDialog = dialog.getDangGiao();
+
+                // 1. Các trường số phải là số nguyên >= 0
+                if (tongDialog < 0 || trenKeDialog < 0 || trongKhoDialog < 0 || khaDungDialog < 0 || dangGiaoDialog < 0) {
+                    JOptionPane.showMessageDialog(dialog, "Tất cả các số lượng phải là số nguyên không âm!", "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // 2. Tồn tổng = Trên kệ + Trong kho
+                if (tongDialog != trenKeDialog + trongKhoDialog) {
+                    JOptionPane.showMessageDialog(dialog, "Tồn tổng phải đúng bằng Trên kệ + Trong kho!", "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // 3. Trên kệ và trong kho không lớn hơn tồn tổng
+                if (trenKeDialog > tongDialog) {
+                    JOptionPane.showMessageDialog(dialog, "Số lượng trên kệ không được lớn hơn tồn tổng!", "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (trongKhoDialog > tongDialog) {
+                    JOptionPane.showMessageDialog(dialog, "Số lượng trong kho không được lớn hơn tồn tổng!", "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // 4. Khả dụng + Đang giao dịch <= tồn tổng
+                if (khaDungDialog + dangGiaoDialog > tongDialog) {
+                    JOptionPane.showMessageDialog(dialog, "Tổng khả dụng và đang giao dịch không được vượt quá tồn tổng!", "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
                 TonKho tk = new TonKho();
                 tk.setMaSanPham(maSP);
                 tk.setMaLo(maLo);
@@ -197,6 +253,7 @@ public class TonKhoController {
                     JOptionPane.showMessageDialog(view, "✅ Đã cập nhật tồn kho thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(view, "❌ Cập nhật thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+
                 }
                 dialog.dispose();
                 loadTonKhoTable();
@@ -215,9 +272,9 @@ public class TonKhoController {
 
             // Tạo header
             String[] columns = {
-                "Mã sản phẩm", "Tên sản phẩm", "Mã lô", "Hạn sử dụng",
-                "Tồn tổng", "Trên kệ", "Trong kho",
-                "Khả dụng", "Đang giao dịch", "Ngưỡng cảnh báo"
+                    "Mã sản phẩm", "Tên sản phẩm", "Mã lô", "Hạn sử dụng",
+                    "Tồn tổng", "Trên kệ", "Trong kho",
+                    "Khả dụng", "Đang giao dịch", "Ngưỡng cảnh báo"
             };
 
             Row header = sheet.createRow(0);
