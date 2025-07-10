@@ -43,6 +43,7 @@ public class GioHangController {
         view.addRemoveItemListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                System.out.println("Đã click nút XÓA!");
                 int maGH = Integer.parseInt(e.getActionCommand());
                 int confirm = JOptionPane.showConfirmDialog(view, "Bạn có chắc muốn xóa sản phẩm này?", "Xác nhận", JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
@@ -56,7 +57,7 @@ public class GioHangController {
                 }
             }
         });
-
+        view.setRemoveListener(removeListener);
         // Lắng nghe sự thay đổi số lượng
         view.setQuantityChangeListener((maGH, newQty, maSP) -> {
             try {
@@ -96,10 +97,30 @@ public class GioHangController {
     }
 
 
+//    private void loadCartData() {
+//        java.util.List<GioHang> cartItems = dao.getALLGioHangByID(maKH);
+//        view.displayCartItems(cartItems);
+//        //attachEventListeners();
+//    }
+private final ActionListener removeListener = new ActionListener() {
+    @Override
+    public void actionPerformed(java.awt.event.ActionEvent e) {
+        int maGH = Integer.parseInt(e.getActionCommand());
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(view, "Bạn có chắc muốn xóa sản phẩm này?", "Xác nhận", javax.swing.JOptionPane.YES_NO_OPTION);
+        if (confirm == javax.swing.JOptionPane.YES_OPTION) {
+            boolean success = dao.deleteItemById(maGH);
+            if (success) {
+                javax.swing.JOptionPane.showMessageDialog(view, "Xóa thành công!");
+                loadCartData(); // gọi lại để cập nhật View
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(view, "Xóa thất bại!");
+            }
+        }
+    }
+};
     private void loadCartData() {
-        java.util.List<GioHang> cartItems = dao.getALLGioHangByID(maKH);
-        view.displayCartItems(cartItems);
-        //attachEventListeners();
+        List<GioHang> cartItems = dao.getALLGioHangByID(maKH);
+        view.displayCartItems(cartItems, removeListener); // fix: truyền listener
     }
 
 }

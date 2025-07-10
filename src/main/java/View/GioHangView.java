@@ -47,6 +47,7 @@ public class GioHangView extends JFrame {
     private JButton btnCheckout;
     private List<GioHang> cartItems;
     private QuantityChangeListener quantityChangeListener;
+    private ActionListener removeListener;
     private int MaKH;
     
 
@@ -107,14 +108,15 @@ public class GioHangView extends JFrame {
         this.add(pnSummary, BorderLayout.SOUTH);
     }
 
-    public void displayCartItems(List<GioHang> cartItems) {
+    public void displayCartItems(List<GioHang> cartItems, ActionListener removeListener) {
         this.cartItems = cartItems;
         System.out.println("Số lượng sản phẩm trong giỏ hàng: " + cartItems.size()); // Gỡ lỗi
         lblTitle.setText("Giỏ hàng của bạn(" + cartItems.size() + ")");
         pnProducts.removeAll();
         for (GioHang item : cartItems) {
             System.out.println("Sản phẩm: " + item.getTenSp() + ", Số lượng: " + item.getSoLuong()); // Gỡ lỗi
-            JPanel productPanel = createProductPanel(item);
+            JPanel productPanel = createProductPanel(item, removeListener);
+//            JPanel productPanel = createProductPanel(item);
             productPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
             pnProducts.add(productPanel);
             JPanel leftPanel = (JPanel) productPanel.getComponent(0);
@@ -126,7 +128,7 @@ public class GioHangView extends JFrame {
         pnProducts.repaint();
     }
 
-    private JPanel createProductPanel(GioHang item) {
+    private JPanel createProductPanel(GioHang item, ActionListener removeListener) {
         JPanel productPanel = new JPanel(new BorderLayout());
         JCheckBox cbxItem = new JCheckBox();
 
@@ -206,6 +208,7 @@ public class GioHangView extends JFrame {
         btnRemove.setActionCommand(String.valueOf(item.getMaGH()));
         btnRemove.setFont(new Font("Arial", Font.PLAIN, 13));
         btnRemove.setPreferredSize(new Dimension(60, 30));
+        btnRemove.addActionListener(removeListener);
 
         JPanel removePanel = new JPanel();
         removePanel.add(btnRemove);
@@ -325,7 +328,7 @@ public class GioHangView extends JFrame {
 
     public void removePaidItems(List<GioHang> paidItems) {
         cartItems.removeAll(paidItems); // Xóa các mục đã thanh toán khỏi danh sách giỏ hàng
-        displayCartItems(cartItems); // Cập nhật lại giao diện
+        displayCartItems(cartItems,removeListener); // Cập nhật lại giao diện
     }
 
     public void addCheckoutListener(ActionListener listener) {
@@ -344,5 +347,9 @@ public class GioHangView extends JFrame {
                 break;
             }
         }
+    }
+
+    public void setRemoveListener(ActionListener listener) {
+        this.removeListener = listener;
     }
 }

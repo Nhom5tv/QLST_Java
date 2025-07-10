@@ -16,6 +16,7 @@ import javax.swing.border.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 import java.util.List;
 
 public class HoaDonOrderView extends JFrame {
@@ -246,7 +247,7 @@ public class HoaDonOrderView extends JFrame {
     }
 
     private void updateTotalAmount() {
-        int total = getTotalItemAmount() + discountValue;
+        int total = getTotalItemAmount() - discountValue;
         total = Math.max(total, 0);
         totalAmountLabel.setText(String.format("%,dđ", total));
     }
@@ -286,5 +287,10 @@ public class HoaDonOrderView extends JFrame {
     public String getMaKhuyenMai() {
         String text = voucherCodeLabel.getText();
         return (text != null && !text.equalsIgnoreCase("Chưa chọn")) ? text : null;
+    }
+
+    public BigDecimal getTotalAmount() {
+        int total = Math.max(getTotalItemAmount() - discountValue, 0);
+        return BigDecimal.valueOf(total);
     }
 }

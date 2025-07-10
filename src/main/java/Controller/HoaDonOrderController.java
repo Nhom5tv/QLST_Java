@@ -182,7 +182,7 @@ public class HoaDonOrderController {
 
     public boolean themHoaDon(List<ChiTietHoaDonOrder> chiTietHoaDons, HoaDonOrder hoaDon) {
         hoaDon.setMaKhachHang(MaKH);
-        hoaDon.setTongTien(tinhTongTien(chiTietHoaDons, discountValue));
+        hoaDon.setTongTien(view.getTotalAmount());
         String maKM = view.getMaKhuyenMai();
         hoaDon.setMakhuyenmai(maKM);
         // Thêm hóa đơn vào bảng hoa_don
