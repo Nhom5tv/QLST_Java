@@ -42,12 +42,18 @@ public class SanPhamDAO implements DAO<SanPham> {
 
     @Override
     public Optional<SanPham> getById(int id) {
-        String sql = "SELECT * FROM san_pham WHERE ma_san_pham = ?";
+        String sql = "SELECT sp.*, COALESCE(SUM(tk.so_luong_ton), 0) AS so_luong_ton " +
+                "FROM san_pham sp " +
+                "LEFT JOIN ton_kho tk ON sp.ma_san_pham = tk.ma_san_pham " +
+                "WHERE sp.ma_san_pham = ? " +
+                "GROUP BY sp.ma_san_pham";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return Optional.of(extract(rs));
+                    SanPham sp = extract(rs);
+                    sp.setSoLuongTon(rs.getInt("so_luong_ton"));
+                    return Optional.of(sp);
                 }
             }
         } catch (SQLException e) {
@@ -284,7 +290,7 @@ public class SanPhamDAO implements DAO<SanPham> {
                 while (rs.next()) {
                     SanPham sp = extract(rs);
                     sp.setSoLuongTon(rs.getInt("so_luong_ton"));
-                    sp.setSoLuongKhaDung(rs.getInt("so_luong_kha_dung")); 
+                    sp.setSoLuongKhaDung(rs.getInt("so_luong_kha_dung"));
                     sp.setTenDanhMuc(rs.getString("ten_danh_muc"));
                     list.add(sp);
                 }

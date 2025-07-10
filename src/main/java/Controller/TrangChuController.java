@@ -9,6 +9,8 @@ import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
+import java.sql.SQLException;
+
 import Model.NhanVien;
 import view.LoginView;
 
@@ -16,7 +18,7 @@ import view.LoginView;
 public class TrangChuController {
     private TrangChuView view;
     private NhanVien nhanVien;
-    
+
 
     public TrangChuController(TrangChuView view, NhanVien nhanVien) {
         this.view = view;
@@ -37,13 +39,13 @@ public class TrangChuController {
             new SanPhamController(spView, conn);
             bindClick(view.getFormSanPhamLabel(), spView, "Sản Phẩm");
 
-            
+
             TonKhoView tkView = new TonKhoView();
-            TonKhoController tkController =new TonKhoController(tkView, conn);
+            TonKhoController tkController = new TonKhoController(tkView, conn);
             bindClick(view.getFormTonKhoLabel(), tkView, "Tồn Kho");
-            
+
             LoHangView lhView = new LoHangView();
-            new LoHangController(view, lhView,tkController);
+            new LoHangController(view, lhView, tkController);
             bindClick(view.getFormLoHangLabel(), lhView, "Lô Hàng");
 
             PhieuNhapView pnView = new PhieuNhapView();
@@ -61,7 +63,7 @@ public class TrangChuController {
             bindClick(view.getFormNhanVienLabel(), nvView, "Hồ Sơ Nhân Viên");
 
             ChamCongView ccView = new ChamCongView();
-            new ChamCongController(view, ccView,nhanVien.getma_nv());
+            new ChamCongController(view, ccView, nhanVien.getma_nv());
             bindClick(view.getFormChamCongLabel(), ccView, "Chấm Công");
 
             LuongView lView = new LuongView();
@@ -69,21 +71,21 @@ public class TrangChuController {
             bindClick(view.getFormLuongLabel(), lView, "Lương");
 
             // 🧾 Quản lý bán hàng (menu có con - giữ nguyên)
-           
+
             HoaDonView hoaDonView = new HoaDonView();
-            HoaDonController hdController =new HoaDonController(view, hoaDonView,conn);
+            HoaDonController hdController = new HoaDonController(view, hoaDonView, conn);
             bindClick(view.getFormHDOfflineLabel(), hoaDonView, "Hóa đơn tại siêu thị");
-            
+
             GiaoDienBanHang gdbhView = new GiaoDienBanHang();
-            new GiaoDienBanHangController(gdbhView, conn,nhanVien,hdController);
+            new GiaoDienBanHangController(gdbhView, conn, nhanVien, hdController);
             bindClick(view.getFormCTHDOfflineLabel(), gdbhView, "Bán hàng tại siêu thị");
-            
+
             HoaDonDatHangView hoaDonDatHangView = new HoaDonDatHangView();
-            new HoaDonOrderController(view, hoaDonDatHangView,tkController);
+            new HoaDonOrderController(view, hoaDonDatHangView, tkController);
             bindClick(view.getFormHDOnlineLabel(), hoaDonDatHangView, "Hóa đơn Online");
-            
+
             // === CÁC MENU KHÔNG CÓN CON - CLICK VÀO SECTION LABEL ===
-            
+
             // 🔐 Quản lý tài khoản - click vào section label
             TaiKhoanView taiKhoanView = new TaiKhoanView();
             new TaiKhoanController(taiKhoanView);
@@ -103,13 +105,13 @@ public class TrangChuController {
             KhuyenMaiView kmView = new KhuyenMaiView();
             new KhuyenMaiController(kmView);
             bindSectionClick(view.getFormKhuyenMaiSectionLabel(), kmView, "Quản Lý Khuyến Mãi");
-            
+
 
             // 📊 Thống kê - click vào section label
             JPanel tkPanel = new JPanel();
             tkPanel.add(new JLabel("Thống kê đang phát triển..."));
             bindSectionClick(view.getFormThongKeSectionLabel(), tkPanel, "Thống Kê");
-            
+
             bindavatarClick();
             phanQuyenNhanVien();
 
@@ -118,15 +120,15 @@ public class TrangChuController {
             JOptionPane.showMessageDialog(null, "Lỗi khi khởi tạo controller hoặc kết nối DB");
         }
         view.getBtnLogout().addActionListener(e -> {
-        int confirm = JOptionPane.showConfirmDialog(view, "Bạn có chắc chắn muốn đăng xuất?", "Xác nhận", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            view.dispose(); // đóng TrangChuView
-           //mở lại loginview
-            LoginView loginView = new LoginView();
-            new LoginController(loginView);
-            loginView.setVisible(true);
-        }
-    });
+            int confirm = JOptionPane.showConfirmDialog(view, "Bạn có chắc chắn muốn đăng xuất?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                view.dispose(); // đóng TrangChuView
+                //mở lại loginview
+                LoginView loginView = new LoginView();
+                new LoginController(loginView);
+                loginView.setVisible(true);
+            }
+        });
     }
 
     // Bind click cho menu có con (giữ nguyên)
@@ -136,19 +138,20 @@ public class TrangChuController {
                 view.setTitleText(title);
                 view.setCenterPanel(panel);
             }
+
             @Override
             public void mouseEntered(MouseEvent e) {
                 // Thêm hiệu ứng hover để người dùng biết có thể click
                 label.setForeground(new java.awt.Color(0, 123, 255));
             }
-            
+
             @Override
             public void mouseExited(MouseEvent e) {
                 label.setForeground(java.awt.Color.BLACK);
             }
         });
     }
-    
+
     // Bind click cho section label (menu không có con)
     private void bindSectionClick(JPanel sectionLabel, JPanel panel, String title) {
         sectionLabel.addMouseListener(new MouseAdapter() {
@@ -156,107 +159,114 @@ public class TrangChuController {
                 view.setTitleText(title);
                 view.setCenterPanel(panel);
             }
-            
+
             @Override
             public void mouseEntered(MouseEvent e) {
                 // Thêm hiệu ứng hover để người dùng biết có thể click
                 sectionLabel.setForeground(new java.awt.Color(0, 123, 255));
             }
-            
+
             @Override
             public void mouseExited(MouseEvent e) {
                 sectionLabel.setForeground(java.awt.Color.BLACK);
             }
         });
-        
+
         // Thêm cursor pointer để báo hiệu có thể click
         sectionLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
     }
-    private void bindavatarClick(){
+
+    private void bindavatarClick() {
         JLabel avatar = view.getlblAvatar();
-        avatar.addMouseListener(new MouseAdapter(){
+        avatar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 NhanVienCaNhanView2 caNhanView = new NhanVienCaNhanView2();
                 caNhanView.setThongTinNhanVien(nhanVien);
-                NhanVienControllerplus nvcp = new NhanVienControllerplus(view,caNhanView,nhanVien.getma_nv());
+                NhanVienControllerplus nvcp = new NhanVienControllerplus(view, caNhanView, nhanVien.getma_nv());
                 view.setCenterPanel(caNhanView);
             }
-        
+
         });
     }
-    
- 
+
+
     private void phanQuyenNhanVien() {
         String role = nhanVien.getChucvu().trim().toLowerCase();
 
         switch (role) {
             case "admin":
                 // Không ẩn gì cả – xem được tất cả
-                break;
-
-            case "kế toán":
-                // Ẩn các chức năng ngoài tài chính & nhân sự
-                hide(
-                    view.getFormSanPhamLabel(),
-                    view.getFormDanhMucLabel(),
-                    view.getFormLoHangLabel(),
-                    view.getFormPhieuNhapLabel(),
-                    view.getFormTonKhoLabel(),
-                    view.getFormNhaCungCapLabel(),
-
-                    view.getFormTaiKhoanSectionLabel(), // Ẩn section label thay vì menu con
-                    view.getFormKhachHangSectionLabel(),
-                    view.getFormHDOfflineLabel(),
-                    view.getFormCTHDOfflineLabel(),
-                    view.getFormHDOnlineLabel(),
-                    view.getFormCTHDOnlineLabel(),
-                    view.getFormKhuyenMaiSectionLabel()
-                );
+                view.setTitleText("Quản Lý Tài Chính");
+                TaiChinhView tcView = new TaiChinhView();
+                new TaiChinhController(tcView);
+                view.setCenterPanel(tcView);
                 break;
 
             case "thu ngân":
                 // Chỉ được xem hóa đơn & khuyến mãi
                 hide(
-                    view.getFormNhanVienLabel(),
-                    view.getFormLuongLabel(),
-                    view.getFormTaiKhoanSectionLabel(),
-                    view.getFormTaiChinhSectionLabel(),
-                    view.getFormThongKeSectionLabel(),
+                        view.getFormSanPhamSectionLabel(),
+                        view.getFormNhanVienLabel(),
+                        view.getFormLuongLabel(),
+                        view.getFormTaiKhoanSectionLabel(),
+                        view.getFormTaiChinhSectionLabel(),
+                        view.getFormThongKeSectionLabel(),
 
-                    view.getFormDanhMucLabel(),
-                    view.getFormSanPhamLabel(),
-                    view.getFormLoHangLabel(),
-                    view.getFormPhieuNhapLabel(),
-                    view.getFormTonKhoLabel(),
-                    view.getFormNhaCungCapLabel(),
-                    view.getFormKhachHangSectionLabel()
+                        view.getFormDanhMucLabel(),
+                        view.getFormSanPhamLabel(),
+                        view.getFormLoHangLabel(),
+                        view.getFormPhieuNhapLabel(),
+                        view.getFormTonKhoLabel(),
+                        view.getFormNhaCungCapLabel(),
+                        view.getFormKhachHangSectionLabel(),
+                        view.getFormKhuyenMaiSectionLabel()
                 );
+                view.setTitleText("Bán hàng tại siêu thị");
+                GiaoDienBanHang gdbhView = new GiaoDienBanHang();
+                HoaDonView hoaDonViewThuNgan = new HoaDonView();
+                try {
+                    HoaDonController hdControllerThuNgan = new HoaDonController(view, hoaDonViewThuNgan, DBConnection.getConnection());
+                    new GiaoDienBanHangController(gdbhView, DBConnection.getConnection(), nhanVien, hdControllerThuNgan);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                view.setCenterPanel(gdbhView);
                 break;
-                
-                case "kho":
+
+            case "kho":
                 // Chỉ được xem hóa đơn & khuyến mãi
                 hide(
-                    view.getFormNhanVienLabel(),
-                    view.getFormLuongLabel(),
-                    view.getFormTaiKhoanSectionLabel(),
-                    view.getFormTaiChinhSectionLabel(),
-                    view.getFormThongKeSectionLabel(),
-                    view.getFormKhachHangSectionLabel(),
-                    view.getFormHDOfflineLabel(),
-                    view.getFormCTHDOfflineLabel(),
-                    view.getFormHDOnlineLabel(),
-                    view.getFormCTHDOnlineLabel(),
-                    view.getFormKhuyenMaiSectionLabel()
+                        view.getFormNhanVienLabel(),
+                        view.getFormLuongLabel(),
+                        view.getFormTaiKhoanSectionLabel(),
+                        view.getFormTaiChinhSectionLabel(),
+                        view.getFormThongKeSectionLabel(),
+                        view.getFormKhachHangSectionLabel(),
+                        view.getFormHDOfflineLabel(),
+                        view.getFormCTHDOfflineLabel(),
+                        view.getFormHDOnlineLabel(),
+                        view.getFormCTHDOnlineLabel(),
+                        view.getFormKhuyenMaiSectionLabel(),
+                        view.getLblBanHangSection()
                 );
+                view.setTitleText("Tồn Kho");
+                TonKhoView tkView = new TonKhoView();
+                try {
+                    TonKhoController tkController = new TonKhoController(tkView, DBConnection.getConnection());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                view.setCenterPanel(tkView);
                 break;
-            
+
             default:
                 // Ẩn hết nếu không xác định được vai trò
                 hideAll();
                 break;
         }
     }
+
     private void hide(JComponent... components) {
         for (JComponent c : components) {
             if (c != null) c.setVisible(false);
@@ -265,14 +275,15 @@ public class TrangChuController {
 
     private void hideAll() {
         hide(
-            view.getFormDanhMucLabel(), view.getFormSanPhamLabel(), view.getFormLoHangLabel(),
-            view.getFormPhieuNhapLabel(), view.getFormTonKhoLabel(), view.getFormNhaCungCapLabel(),
-            view.getFormNhanVienLabel(), view.getFormChamCongLabel(), view.getFormLuongLabel(),
-            view.getFormHDOfflineLabel(), view.getFormCTHDOfflineLabel(),
-            view.getFormHDOnlineLabel(), view.getFormCTHDOnlineLabel(),
-            view.getFormTaiKhoanSectionLabel(), view.getFormKhachHangSectionLabel(),
-            view.getFormTaiChinhSectionLabel(), view.getFormKhuyenMaiSectionLabel(), 
-            view.getFormThongKeSectionLabel()
+                view.getFormDanhMucLabel(), view.getFormSanPhamLabel(), view.getFormLoHangLabel(),
+                view.getFormPhieuNhapLabel(), view.getFormTonKhoLabel(), view.getFormNhaCungCapLabel(),
+                view.getFormNhanVienLabel(), view.getFormChamCongLabel(), view.getFormLuongLabel(),
+                view.getFormHDOfflineLabel(), view.getFormCTHDOfflineLabel(),
+                view.getFormHDOnlineLabel(), view.getFormCTHDOnlineLabel(),
+                view.getFormTaiKhoanSectionLabel(), view.getFormKhachHangSectionLabel(),
+                view.getFormTaiChinhSectionLabel(), view.getFormKhuyenMaiSectionLabel(),
+                view.getFormThongKeSectionLabel(), view.getFormSanPhamSectionLabel(),
+                view.getLblBanHangSection()
         );
     }
 }

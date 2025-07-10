@@ -295,8 +295,9 @@ public class HoaDonOrderController {
             int maSP = item.getMaSP();
             int soLuong = item.getSoLuong();
 
-            List<TonKho> lichTru = tkDAO.getDanhSachLoTruTon_TonKho(maSP, soLuong);
+            List<TonKho> lichTru = tkDAO.getLoTruTon_TonKho(maSP, soLuong);
             int tongCo = lichTru.stream().mapToInt(TonKho::getSoLuongTon).sum();
+            System.out.println("Tong co: "+tongCo);
             if (tongCo < soLuong) {
                 JOptionPane.showMessageDialog(view, "Không đủ tồn kho khả dụng cho sản phẩm: " + item.getTenSp(), "Lỗi", JOptionPane.ERROR_MESSAGE);
                 return;
