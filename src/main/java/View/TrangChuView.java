@@ -27,7 +27,7 @@ public class TrangChuView extends JFrame {
     private JPanel lblDanhMuc, lblSanPham, lblLoHang, lblPhieuNhap, lblTonKho, lblNhaCungCap;
     private JPanel lblNhanVien, lblChamCong, lblLuong;
     private JPanel lblHDOffline, lblCTHDOffline, lblHDOnline, lblCTHDOnline;
-    private JPanel lblTaiKhoanSection, lblKhachHangSection, lblTaiChinhSection,lblKhuyenMaiSection, lblThongKeSection;
+    private JPanel lblTaiKhoanSection, lblBanHangSection, lblKhachHangSection, lblTaiChinhSection,lblKhuyenMaiSection, lblThongKeSection, lblSanPhamSection;
 
     public TrangChuView(NhanVien nhanVien) {
         setTitle("Trang chủ quản lý siêu thị");
@@ -122,7 +122,8 @@ public class TrangChuView extends JFrame {
         
 
         // MENU
-        sidebar.add(createSectionLabel("🗂 1. Quản lý sản phẩm"));
+        lblSanPhamSection = createSectionLabel("🗂 1. Quản lý sản phẩm");
+        sidebar.add(lblSanPhamSection);
         lblDanhMuc = createMenuLabel("▸ Danh mục sản phẩm");
         lblSanPham = createMenuLabel("▸ Sản phẩm");
         lblTonKho = createMenuLabel("▸ Tồn kho");
@@ -144,13 +145,16 @@ public class TrangChuView extends JFrame {
         sidebar.add(lblChamCong);
         sidebar.add(lblLuong);
 
-        sidebar.add(createSectionLabel("📇 3. Quản lý bán hàng"));
+        lblBanHangSection = createSectionLabel("📇 3. Quản lý bán hàng");
+        sidebar.add(lblBanHangSection);
         lblHDOffline = createMenuLabel("▸ Hóa đơn tại siêu thị");
         lblCTHDOffline = createMenuLabel("▸ Bán Hàng POS");
         lblHDOnline = createMenuLabel("▸ Hóa đơn đặt online");
         sidebar.add(lblHDOffline);
         sidebar.add(lblCTHDOffline);
         sidebar.add(lblHDOnline);
+
+
 
         lblTaiKhoanSection = createSectionLabel("🔐 4. Quản lý tài khoản");
         sidebar.add(lblTaiKhoanSection);
@@ -295,7 +299,11 @@ public class TrangChuView extends JFrame {
     public JPanel getFormTaiChinhSectionLabel() { return lblTaiChinhSection; }
     public JPanel getFormKhuyenMaiSectionLabel() { return lblKhuyenMaiSection; }
     public JPanel getFormThongKeSectionLabel() { return lblThongKeSection; }
-    
+    public JPanel getFormSanPhamSectionLabel() { return lblSanPhamSection; }
+    public JPanel getLblBanHangSection() {
+        return lblBanHangSection;
+    }
+
     public JButton getBtnLogout() {
         return btnLogout;
     }
@@ -303,4 +311,6 @@ public class TrangChuView extends JFrame {
     public JLabel getlblAvatar() {
         return lblAvatar;
     }
+
+
 }
