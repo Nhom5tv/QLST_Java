@@ -78,6 +78,12 @@ public class ChiTietHoaDonDialog extends JDialog {
         table.setIntercellSpacing(new Dimension(2, 2));
         table.setSelectionBackground(new Color(220, 240, 255));
 
+        table.setRowSelectionAllowed(false);
+        table.setColumnSelectionAllowed(false);
+        table.setCellSelectionEnabled(false);
+        table.setFocusable(false);
+        table.setDefaultEditor(Object.class, null);
+
         // Zebra stripe render
         DefaultTableCellRenderer cellRenderer = new DefaultTableCellRenderer() {
             @Override

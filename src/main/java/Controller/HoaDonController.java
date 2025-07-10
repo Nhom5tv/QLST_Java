@@ -138,6 +138,7 @@ public class HoaDonController {
         }
         ChiTietHoaDonDialog dialog = new ChiTietHoaDonDialog(stmv, maHD, chiTietList);
         dialog.setVisible(true);
+        dialog.setEnabled(false);
     }
 
 }
