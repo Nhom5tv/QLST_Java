@@ -669,7 +669,15 @@ public class GiaoDienBanHangController {
             int row = ea.getFirstRow();
             int col = ea.getColumn();
             System.out.println("Thay đổi tại hàng " + row + ", cột " + col);
-            if (col == -1 || col == 2 || col == 4) { // Thêm điều kiện col == -1
+            if (model.getRowCount() == 0) {
+                SwingUtilities.invokeLater(() -> {
+                    view.getLblTongTien().setText("Tổng Tiền: 0 đ");
+                    view.getTxtTienKhachDua().setText("");
+                    view.getTxtGhiChu().setText("");
+                });
+                return;
+            }
+            if (col == -1 || col == 2 || col == 4) { // Xử lý thay đổi toàn bảng, SL, hoặc Giảm giá
                 try {
                     int soLuong = Integer.parseInt(tableGioHang.getValueAt(row, 2).toString());
                     double donGia = Double.parseDouble(tableGioHang.getValueAt(row, 3).toString());
@@ -711,8 +719,21 @@ public class GiaoDienBanHangController {
                         tableGioHang.setRowSelectionInterval(row, row);
                         JPopupMenu popup = new JPopupMenu();
                         JMenuItem deleteItem = new JMenuItem("Xóa sản phẩm này");
-                        deleteItem.addActionListener(ev -> model.removeRow(row));
-                        tinhTienVaTienThua();
+                        deleteItem.addActionListener(ev -> {
+                            DefaultTableModel model = (DefaultTableModel) tableGioHang.getModel();
+                            model.removeRow(row);
+                            System.out.println("Đã xóa hàng " + row + ", số hàng còn lại: " + model.getRowCount());
+                            SwingUtilities.invokeLater(() -> {
+                                if (model.getRowCount() == 0) {
+                                    view.getLblTongTien().setText("Tổng Tiền: 0 đ");
+                                    view.getLblTienThua().setText("Tiền Thừa Trả Khách: 0 đ");
+                                    view.getTxtTienKhachDua().setText("0");
+                                    view.getTxtGhiChu().setText("");
+                                } else {
+                                    tinhTienVaTienThua();
+                                }
+                            });
+                        });
                         popup.add(deleteItem);
                         popup.show(e.getComponent(), e.getX(), e.getY());
                     }
@@ -972,6 +993,7 @@ public class GiaoDienBanHangController {
             }
 
             JOptionPane.showMessageDialog(view, "Lưu hóa đơn thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+
             // 🌟 Gọi hàm thêm khoản thu
             boolean thuInserted = new TaiChinhDAO().insertThuTuTatCaHoaDonVaDonHang();
             if (thuInserted) {

@@ -148,4 +148,7 @@ public JLabel getLblTienThua() {
     return lblTienThua;
 }
 
+    public JTextArea getTxtGhiChu() {
+        return txtGhiChu;
+    }
 }
