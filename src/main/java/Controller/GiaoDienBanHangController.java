@@ -82,6 +82,7 @@ public class GiaoDienBanHangController {
     private NhanVien nhanvien;
     private HoaDonController hoaDonController;
     private TonKhoDAO tkDAO;
+    private TaiChinhController taiChinhController;
 
     public GiaoDienBanHangController(GiaoDienBanHang view, Connection conn, NhanVien nhanvien, HoaDonController hoaDonController) {
         this.view = view;
@@ -90,6 +91,7 @@ public class GiaoDienBanHangController {
         this.conn = conn; // Store the connection
         this.hoaDonController = hoaDonController;
         this.nhanvien = nhanvien;
+        this.taiChinhController = taiChinhController; // gán controller
         initView();
         addEvents();
     }
@@ -942,6 +944,9 @@ public class GiaoDienBanHangController {
         hoaDon.setNgayLap(LocalDateTime.now());
         hoaDon.setMaNV(nhanvien.getma_nv());
         hoaDon.setHinhThucThanhToan("Tiền mặt");
+        if (taiChinhController != null) {
+            taiChinhController.loadData(null);
+        }
 
         double tongTien = 0;
         List<ChiTietHoaDon> chiTietHoaDons = new ArrayList<>();

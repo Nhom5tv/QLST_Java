@@ -75,6 +75,7 @@ public class HoaDonOrderController {
     private TrangChuView stmv;
     private TonKhoController tkController;
     private TonKhoDAO tkDAO;
+    private TaiChinhController taiChinhController;
 
     //Khach hang
     public HoaDonOrderController(HoaDonOrderDAO hoaDonDAO, ChiTietHoaDonOrderDAO cthdDAO, HoaDonOrderView view, int MaKH) {
@@ -83,6 +84,7 @@ public class HoaDonOrderController {
         this.view = view;
         this.MaKH = MaKH;
         this.MaKM = MaKM;
+        this.taiChinhController = taiChinhController;
         try {
             this.tkDAO = new TonKhoDAO(DBConnection.getConnection());
             this.tkController = tkController;
@@ -332,6 +334,9 @@ public class HoaDonOrderController {
             boolean thuInserted = new TaiChinhDAO().insertThuTuTatCaHoaDonVaDonHang();
             if (thuInserted) {
                 System.out.println("✅ Thêm khoản thu thành công!");
+                if (taiChinhController != null) {
+                    taiChinhController.loadData(null);
+                }
             } else {
                 System.out.println("⚠️ Không có khoản thu nào được thêm.");
             }
