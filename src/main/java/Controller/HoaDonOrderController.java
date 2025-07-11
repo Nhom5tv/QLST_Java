@@ -253,12 +253,17 @@ public class HoaDonOrderController {
             // 5. Thêm thông tin chung
             document.add(new Paragraph("HÓA ĐƠN MUA HÀNG", fontTitle));
             document.add(new Paragraph("Mã hóa đơn: " + hoaDonOrder.getMaHoaDon(), fontContent));
-            if (diaChi != null) {
-                document.add(new Paragraph("Khách hàng: " + diaChi.getName(), fontContent));
-                document.add(new Paragraph("Địa chỉ: " + diaChi.getDetailAddress(), fontContent));
-            } else {
-                document.add(new Paragraph("Địa chỉ và tên khách hàng không có sẵn", fontContent));
-            }
+//            if (diaChi != null) {
+//                document.add(new Paragraph("Khách hàng: " + diaChi.getName(), fontContent));
+//                document.add(new Paragraph("Địa chỉ: " + diaChi.getDetailAddress(), fontContent));
+//                 document.add(new Paragraph("Sđt: " + diaChi.getPhoneNumber(), fontContent));
+//            } else {
+//                document.add(new Paragraph("Địa chỉ và tên khách hàng không có sẵn", fontContent));
+//            }
+       
+            document.add(new Paragraph("Người nhận: " + hoaDonOrder.getTenNguoiNhan(), fontContent));
+            document.add(new Paragraph("Sđt: " + hoaDonOrder.getSoDienThoai(), fontContent));
+            document.add(new Paragraph("Địa chỉ: " + hoaDonOrder.getDiaChiChiTiet(), fontContent));
             document.add(new Paragraph("Ngày lập: " + ngayTaoString, fontContent));
             document.add(Chunk.NEWLINE);
 
@@ -342,6 +347,14 @@ public class HoaDonOrderController {
                 chiTietHoaDons.add(ct);
             }
         }
+        // 
+                    DiaChi diaChi = view.getDiaChi();
+               if (diaChi != null) {
+                   hoaDonOrder.setTenNguoiNhan(diaChi.getName()); 
+                   hoaDonOrder.setSoDienThoai(diaChi.getPhoneNumber());
+                   hoaDonOrder.setDiaChiChiTiet(diaChi.getDetailAddress()); 
+               }
+
 
         boolean orderSuccess = themHoaDon(chiTietHoaDons, hoaDonOrder);
         if (orderSuccess) {
@@ -484,6 +497,29 @@ public class HoaDonOrderController {
         if (dialog.isConfirmed()) {
             String newStatus = dialog.getSelectedTrangThai();
             if (!newStatus.equals(currentStatus)) {
+//                boolean success = hoaDonDAO.updateStatus(maHD, newStatus);
+//                if (success) {
+//                    hdview.getTableModel().setValueAt(newStatus, row, 5);
+//                    JOptionPane.showMessageDialog(hdview, "Cập nhật trạng thái thành công!");
+//
+//                    List<ChiTietHoaDonOrder> dsCT = cthdDAO.getByMaHoaDon(maHD);
+//                    for (ChiTietHoaDonOrder ct : dsCT) {
+//                        int maSP = ct.getMaSanPham();
+//                        int maLo = ct.getMaLoHang();
+//                        int soLuong = ct.getSoLuong();
+//
+//                        if (newStatus.equals("Hoàn thành")) {
+//                            tkDAO.hoanTatDonHang(maSP, maLo, soLuong);
+//                        } else if (newStatus.equals("Hủy")) {
+//                            tkDAO.huyDonHang(maSP, maLo, soLuong);
+//                        }
+//                    }
+//                    if (tkController != null) {
+//                        tkController.loadTonKhoTable();
+//                    }
+//                } else {
+//                    JOptionPane.showMessageDialog(hdview, "Lỗi khi cập nhật trạng thái!");
+//                }
                 boolean success = hoaDonDAO.updateStatus(maHD, newStatus);
                 if (success) {
                     hdview.getTableModel().setValueAt(newStatus, row, 5);
@@ -504,9 +540,52 @@ public class HoaDonOrderController {
                     if (tkController != null) {
                         tkController.loadTonKhoTable();
                     }
-                } else {
-                    JOptionPane.showMessageDialog(hdview, "Lỗi khi cập nhật trạng thái!");
+
+                    // 👉 THÊM ĐOẠN SAU ĐÂY để xuất PDF nếu trạng thái là "Đang giao"
+                    if (newStatus.equals("Đang giao")) {
+                        List<ChiTietHoaDonOrder> chiTietList = cthdDAO.getByMaHoaDon(maHD);
+                        HoaDonOrder hoaDon = hoaDonDAO.getById(maHD);
+                        hoaDon.setChiTietHoaDons(chiTietList);
+
+//                        // Lấy tên và địa chỉ khách hàng từ bảng khachhang
+//                        KhachHangDAO khDAO = new KhachHangDAO();
+//                        KhachHang kh = khDAO.getKhachHangById(hoaDon.getMaKhachHang());
+//
+//                        if (kh != null) {
+//                            DiaChi diaChi = new DiaChi();
+//                            diaChi.setCustomerId(kh.getMaKH());
+//                            diaChi.setName(kh.getHoTen());
+//                            diaChi.setDetailAddress(kh.getDiaChi());
+//                            hoaDon.setDiaChi(diaChi);
+//                        }
+
+                        // Lấy danh sách sản phẩm từ mã sản phẩm (chỉ để lấy tên hiển thị trong PDF)
+                        List<GioHang> items = new ArrayList<>();
+                        SanPhamDAO spDAO = null;
+                        try {
+                            spDAO = new SanPhamDAO(DBConnection.getConnection());
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                            JOptionPane.showMessageDialog(hdview, "Không thể kết nối để lấy tên sản phẩm!");
+                            return;
+                        }
+
+                        for (ChiTietHoaDonOrder ct : chiTietList) {
+                            GioHang item = new GioHang();
+                            item.setMaSP(ct.getMaSanPham());
+                            item.setSoLuong(ct.getSoLuong());
+                            item.setGiaban(ct.getDonGia());
+
+                            String tenSP = spDAO.getTenSanPhamById(ct.getMaSanPham());
+                            item.setTenSp(tenSP);
+
+                            items.add(item);
+                        }
+
+                        generateInvoicePDF(hoaDon, items);
+                    }
                 }
+
             }
         }
     }

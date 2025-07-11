@@ -300,5 +300,18 @@ public class SanPhamDAO implements DAO<SanPham> {
         }
         return list;
     }
+     public String getTenSanPhamById(int id) {
+        String sql = "SELECT ten_san_pham FROM san_pham WHERE ma_san_pham = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("ten_san_pham");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "Không rõ";
+    }
 
 }

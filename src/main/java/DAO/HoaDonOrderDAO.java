@@ -24,58 +24,121 @@ import java.util.List;
 
 public class HoaDonOrderDAO {
 
+//    public List<HoaDonOrder> getAll() {
+//        List<HoaDonOrder> list = new ArrayList<>();
+//        String sql = "SELECT * FROM hdorder ORDER BY ma_hoa_don DESC";
+//
+//        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+//
+//            while (rs.next()) {
+//                HoaDonOrder hoaDon = new HoaDonOrder();
+//                hoaDon.setMaHoaDon(rs.getInt("ma_hoa_don"));
+//                hoaDon.setMaKhachHang(rs.getInt("ma_khach_hang"));
+//                hoaDon.setNgayTao(rs.getTimestamp("ngay_tao"));
+//                hoaDon.setTongTien(rs.getBigDecimal("tong_tien"));
+//                hoaDon.setMakhuyenmai(rs.getString("ma_khuyen_mai"));
+//                hoaDon.setTrangThai(rs.getString("trang_thai"));
+//
+//                list.add(hoaDon);
+//            }
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return list;
+//    }
     public List<HoaDonOrder> getAll() {
-        List<HoaDonOrder> list = new ArrayList<>();
-        String sql = "SELECT * FROM hdorder ORDER BY ma_hoa_don DESC";
+    List<HoaDonOrder> list = new ArrayList<>();
+    String sql = "SELECT * FROM hdorder ORDER BY ma_hoa_don DESC";
 
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+    try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
 
-            while (rs.next()) {
-                HoaDonOrder hoaDon = new HoaDonOrder();
-                hoaDon.setMaHoaDon(rs.getInt("ma_hoa_don"));
-                hoaDon.setMaKhachHang(rs.getInt("ma_khach_hang"));
-                hoaDon.setNgayTao(rs.getTimestamp("ngay_tao"));
-                hoaDon.setTongTien(rs.getBigDecimal("tong_tien"));
-                hoaDon.setMakhuyenmai(rs.getString("ma_khuyen_mai"));
-                hoaDon.setTrangThai(rs.getString("trang_thai"));
+        while (rs.next()) {
+            HoaDonOrder hoaDon = new HoaDonOrder();
+            hoaDon.setMaHoaDon(rs.getInt("ma_hoa_don"));
+            hoaDon.setMaKhachHang(rs.getInt("ma_khach_hang"));
+            hoaDon.setNgayTao(rs.getTimestamp("ngay_tao"));
+            hoaDon.setTongTien(rs.getBigDecimal("tong_tien"));
+            hoaDon.setMakhuyenmai(rs.getString("ma_khuyen_mai"));
+            hoaDon.setTrangThai(rs.getString("trang_thai"));
 
-                list.add(hoaDon);
-            }
+            // THÊM 3 TRƯỜNG MỚI
+            hoaDon.setTenNguoiNhan(rs.getString("TenNguoiNhan"));
+            hoaDon.setSoDienThoai(rs.getString("SoDienThoai"));
+            hoaDon.setDiaChiChiTiet(rs.getString("DiaChiChiTiet"));
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+            list.add(hoaDon);
         }
 
-        return list;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
 
+    return list;
+}
+
+
+//    public int insert(HoaDonOrder hoaDon) {
+//        String sql = "INSERT INTO hdorder (ma_khach_hang, ngay_tao, tong_tien,ma_khuyen_mai, trang_thai) VALUES (?, ?, ?, ?, ?)";
+//        String trangThai = hoaDon.getTrangThai() != null ? hoaDon.getTrangThai() : "Đang xử lý";
+//        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+//            Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+//            stmt.setInt(1, hoaDon.getMaKhachHang());
+//            stmt.setTimestamp(2, currentTime);
+//            stmt.setBigDecimal(3, hoaDon.getTongTien());
+//            stmt.setString(4, hoaDon.getMakhuyenmai());
+//            stmt.setString(5, trangThai);
+//
+//            int affectedRows = stmt.executeUpdate();
+//            if (affectedRows == 0) {
+//                return -1;
+//            }
+//
+//            ResultSet generatedKeys = stmt.getGeneratedKeys();
+//            if (generatedKeys.next()) {
+//                return generatedKeys.getInt(1);
+//            } else {
+//                return -1;
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            return -1;
+//        }
+//    }
     public int insert(HoaDonOrder hoaDon) {
-        String sql = "INSERT INTO hdorder (ma_khach_hang, ngay_tao, tong_tien,ma_khuyen_mai, trang_thai) VALUES (?, ?, ?, ?, ?)";
-        String trangThai = hoaDon.getTrangThai() != null ? hoaDon.getTrangThai() : "Đang xử lý";
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-            stmt.setInt(1, hoaDon.getMaKhachHang());
-            stmt.setTimestamp(2, currentTime);
-            stmt.setBigDecimal(3, hoaDon.getTongTien());
-            stmt.setString(4, hoaDon.getMakhuyenmai());
-            stmt.setString(5, trangThai);
+    String sql = "INSERT INTO hdorder (ma_khach_hang, ngay_tao, tong_tien, ma_khuyen_mai, trang_thai, TenNguoiNhan, SoDienThoai, DiaChiChiTiet) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    String trangThai = hoaDon.getTrangThai() != null ? hoaDon.getTrangThai() : "Đang xử lý";
+    try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+        stmt.setInt(1, hoaDon.getMaKhachHang());
+        stmt.setTimestamp(2, currentTime);
+        stmt.setBigDecimal(3, hoaDon.getTongTien());
+        stmt.setString(4, hoaDon.getMakhuyenmai());
+        stmt.setString(5, trangThai);
 
-            int affectedRows = stmt.executeUpdate();
-            if (affectedRows == 0) {
-                return -1;
-            }
+        // 3 trường mới
+        stmt.setString(6, hoaDon.getTenNguoiNhan());
+        stmt.setString(7, hoaDon.getSoDienThoai());
+        stmt.setString(8, hoaDon.getDiaChiChiTiet());
 
-            ResultSet generatedKeys = stmt.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                return generatedKeys.getInt(1);
-            } else {
-                return -1;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        int affectedRows = stmt.executeUpdate();
+        if (affectedRows == 0) {
             return -1;
         }
+
+        ResultSet generatedKeys = stmt.getGeneratedKeys();
+        if (generatedKeys.next()) {
+            return generatedKeys.getInt(1);
+        } else {
+            return -1;
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return -1;
     }
+}
+
 
     public boolean updateStatus(int maHoaDon, String trangThai) {
         String sql = "UPDATE hdorder SET trang_thai = ? WHERE ma_hoa_don = ?";
@@ -94,31 +157,113 @@ public class HoaDonOrderDAO {
 
     }
 
+//    public List<HoaDonOrder> getByMaKhachHang(int maKH) {
+//        List<HoaDonOrder> list = new ArrayList<>();
+//        String sql = "SELECT * FROM hdorder WHERE ma_khach_hang = ? ORDER BY ngay_tao DESC";
+//
+//        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+//
+//            stmt.setInt(1, maKH);
+//            ResultSet rs = stmt.executeQuery();
+//
+//            while (rs.next()) {
+//                HoaDonOrder hd = new HoaDonOrder();
+//                hd.setMaHoaDon(rs.getInt("ma_hoa_don"));
+//                hd.setMaKhachHang(rs.getInt("ma_khach_hang"));
+//                hd.setNgayTao(rs.getTimestamp("ngay_tao"));
+//                hd.setTongTien(rs.getBigDecimal("tong_tien"));
+//                hd.setTrangThai(rs.getString("trang_thai"));
+//
+//                list.add(hd); // CHƯA gán chi tiết ở đây
+//            }
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return list;
+//    }
     public List<HoaDonOrder> getByMaKhachHang(int maKH) {
-        List<HoaDonOrder> list = new ArrayList<>();
-        String sql = "SELECT * FROM hdorder WHERE ma_khach_hang = ? ORDER BY ngay_tao DESC";
+    List<HoaDonOrder> list = new ArrayList<>();
+    String sql = "SELECT * FROM hdorder WHERE ma_khach_hang = ? ORDER BY ngay_tao DESC";
 
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+    try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, maKH);
-            ResultSet rs = stmt.executeQuery();
+        stmt.setInt(1, maKH);
+        ResultSet rs = stmt.executeQuery();
 
-            while (rs.next()) {
-                HoaDonOrder hd = new HoaDonOrder();
-                hd.setMaHoaDon(rs.getInt("ma_hoa_don"));
-                hd.setMaKhachHang(rs.getInt("ma_khach_hang"));
-                hd.setNgayTao(rs.getTimestamp("ngay_tao"));
-                hd.setTongTien(rs.getBigDecimal("tong_tien"));
-                hd.setTrangThai(rs.getString("trang_thai"));
+        while (rs.next()) {
+            HoaDonOrder hd = new HoaDonOrder();
+            hd.setMaHoaDon(rs.getInt("ma_hoa_don"));
+            hd.setMaKhachHang(rs.getInt("ma_khach_hang"));
+            hd.setNgayTao(rs.getTimestamp("ngay_tao"));
+            hd.setTongTien(rs.getBigDecimal("tong_tien"));
+            hd.setTrangThai(rs.getString("trang_thai"));
+            hd.setMakhuyenmai(rs.getString("ma_khuyen_mai"));
 
-                list.add(hd); // CHƯA gán chi tiết ở đây
-            }
+            // THÊM 3 TRƯỜNG MỚI
+            hd.setTenNguoiNhan(rs.getString("TenNguoiNhan"));
+            hd.setSoDienThoai(rs.getString("SoDienThoai"));
+            hd.setDiaChiChiTiet(rs.getString("DiaChiChiTiet"));
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+            list.add(hd);
         }
 
-        return list;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+
+    return list;
+}
+
+//    public HoaDonOrder getById(int maHD) {
+//        HoaDonOrder hd = null;
+//        String sql = "SELECT * FROM hdorder WHERE ma_hoa_don = ?";
+//        try (Connection conn = DBConnection.getConnection();
+//             PreparedStatement ps = conn.prepareStatement(sql)) {
+//            ps.setInt(1, maHD);
+//            ResultSet rs = ps.executeQuery();
+//            if (rs.next()) {
+//                hd = new HoaDonOrder();
+//                hd.setMaHoaDon(rs.getInt("ma_hoa_don"));
+//                hd.setMaKhachHang(rs.getInt("ma_khach_hang"));
+//                hd.setNgayTao(rs.getTimestamp("ngay_tao"));
+//                hd.setTongTien(rs.getBigDecimal("tong_tien"));
+//                hd.setTrangThai(rs.getString("trang_thai"));
+//                hd.setMakhuyenmai(rs.getString("ma_khuyen_mai"));
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return hd;
+//    }
+    public HoaDonOrder getById(int maHD) {
+    HoaDonOrder hd = null;
+    String sql = "SELECT * FROM hdorder WHERE ma_hoa_don = ?";
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, maHD);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            hd = new HoaDonOrder();
+            hd.setMaHoaDon(rs.getInt("ma_hoa_don"));
+            hd.setMaKhachHang(rs.getInt("ma_khach_hang"));
+            hd.setNgayTao(rs.getTimestamp("ngay_tao"));
+            hd.setTongTien(rs.getBigDecimal("tong_tien"));
+            hd.setTrangThai(rs.getString("trang_thai"));
+            hd.setMakhuyenmai(rs.getString("ma_khuyen_mai"));
+
+            // THÊM 3 TRƯỜNG MỚI
+            hd.setTenNguoiNhan(rs.getString("TenNguoiNhan"));
+            hd.setSoDienThoai(rs.getString("SoDienThoai"));
+            hd.setDiaChiChiTiet(rs.getString("DiaChiChiTiet"));
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return hd;
+}
+
+
 }
 

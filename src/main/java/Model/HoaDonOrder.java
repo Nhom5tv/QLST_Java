@@ -23,6 +23,11 @@ public class HoaDonOrder {
     private DiaChi diaChi;
     private List<ChiTietHoaDonOrder> chiTietHoaDons;
     
+    // lưu địa chỉ là text cứng
+    private String tenNguoiNhan;
+    private String soDienThoai;
+    private String diaChiChiTiet;
+    
     public HoaDonOrder() {
         this.chiTietHoaDons = new ArrayList<>();
     }
@@ -118,4 +123,29 @@ public class HoaDonOrder {
     public void setTrangThai(String trangThai) {
         this.trangThai = trangThai;
     }
+
+    public String getTenNguoiNhan() {
+        return tenNguoiNhan;
+    }
+
+    public void setTenNguoiNhan(String tenNguoiNhan) {
+        this.tenNguoiNhan = tenNguoiNhan;
+    }
+
+    public String getSoDienThoai() {
+        return soDienThoai;
+    }
+
+    public void setSoDienThoai(String soDienThoai) {
+        this.soDienThoai = soDienThoai;
+    }
+
+    public String getDiaChiChiTiet() {
+        return diaChiChiTiet;
+    }
+
+    public void setDiaChiChiTiet(String diaChiChiTiet) {
+        this.diaChiChiTiet = diaChiChiTiet;
+    }
+    
 }
